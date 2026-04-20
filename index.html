@@ -14,6 +14,7 @@
       --danger:    #FF3B30;
       --green:     #34C759;
       --orange:    #FF9F0A;
+      --purple:    #AF52DE;
       --bg:        #F2F2F7;
       --card:      #FFFFFF;
       --label:     #000000;
@@ -35,7 +36,6 @@
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
     button { touch-action: manipulation; }
-    a, [role="button"] { touch-action: manipulation; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
       background: var(--bg);
@@ -53,7 +53,7 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
     header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.4px; }
     #settingsBtn {
@@ -63,7 +63,7 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Key warning ── */
+    /* ── Banners ── */
     #noKeyWarning {
       background: rgba(255,159,10,.12);
       border: 1px solid rgba(255,159,10,.3);
@@ -74,10 +74,9 @@
       margin-bottom: 20px;
       cursor: pointer;
       text-align: center;
+      touch-action: manipulation;
     }
     #noKeyWarning.hidden { display: none; }
-
-    /* ── Error banner ── */
     #errorBanner {
       background: rgba(255,59,48,.1);
       border: 1px solid rgba(255,59,48,.25);
@@ -104,8 +103,8 @@
       min-height: 22px;
       transition: color 0.2s;
     }
-    #statusText.rec  { color: var(--danger); font-weight: 600; }
-    #statusText.xcrb { color: var(--accent); }
+    #statusText.rec   { color: var(--danger); font-weight: 600; }
+    #statusText.proc  { color: var(--accent); }
 
     #recordBtn {
       width: 96px; height: 96px;
@@ -132,8 +131,8 @@
       50%      { transform: scale(1.07); }
     }
 
-    /* ── Transcript card ── */
-    #transcriptCard {
+    /* ── Last recording card ── */
+    #lastCard {
       width: 100%;
       background: var(--card);
       border-radius: 12px;
@@ -144,7 +143,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 6px;
+      margin-bottom: 8px;
     }
     .card-meta span:first-child { font-size: 12px; color: var(--secondary); }
     #savedBadge {
@@ -153,7 +152,31 @@
       opacity: 0; transition: opacity .3s;
     }
     #savedBadge.show { opacity: 1; }
-    #transcriptText { font-size: 15px; line-height: 1.55; }
+    #rawTranscript {
+      font-size: 14px;
+      color: var(--secondary);
+      line-height: 1.4;
+      font-style: italic;
+      margin-bottom: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+    }
+    #structuredResult { display: none; }
+
+    /* ── Structured display (shared) ── */
+    .s-type-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .6px;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .s-type-label.cal { color: var(--accent); }
+    .s-type-label.todo { color: var(--purple); }
+
+    .s-title   { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .s-detail  { font-size: 13px; color: var(--secondary); line-height: 1.5; }
+    .s-detail span { display: block; }
 
     /* ── Notes section ── */
     #notesSection h2 {
@@ -166,23 +189,34 @@
       padding-left: 4px;
     }
     #notesList { display: flex; flex-direction: column; gap: 8px; }
+
     .note-card {
       background: var(--card);
       border-radius: 12px;
       padding: 14px 16px;
       display: flex;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
+    }
+    .note-icon {
+      font-size: 20px;
+      flex-shrink: 0;
+      margin-top: 1px;
     }
     .note-body { flex: 1; min-width: 0; }
-    .note-date  { font-size: 12px; color: var(--secondary); margin-bottom: 4px; }
-    .note-text  {
-      font-size: 15px; line-height: 1.5;
-      overflow: hidden;
-      display: -webkit-box;
-      -webkit-line-clamp: 3;
-      -webkit-box-orient: vertical;
+    .note-type-label {
+      font-size: 10px;
+      font-weight: 700;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+      margin-bottom: 3px;
     }
+    .note-type-label.cal  { color: var(--accent); }
+    .note-type-label.todo { color: var(--purple); }
+    .note-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+    .note-sub   { font-size: 13px; color: var(--secondary); line-height: 1.4; }
+    .note-timestamp { font-size: 11px; color: var(--secondary); margin-top: 5px; }
+
     .note-del {
       background: none; border: none;
       color: var(--secondary);
@@ -209,8 +243,7 @@
       z-index: 200;
       align-items: flex-end;
     }
-    #overlay.open { pointer-events: auto; }
-    #overlay.open { display: flex; }
+    #overlay.open { display: flex; pointer-events: auto; }
     #sheet {
       background: var(--card);
       border-radius: 18px 18px 0 0;
@@ -266,12 +299,13 @@
   <div id="recordSection">
     <p id="statusText">Tap to record</p>
     <button type="button" id="recordBtn" aria-label="Start recording">🎤</button>
-    <div id="transcriptCard">
+    <div id="lastCard">
       <div class="card-meta">
         <span>Last recording</span>
         <span id="savedBadge">✓ Saved</span>
       </div>
-      <p id="transcriptText"></p>
+      <p id="rawTranscript"></p>
+      <div id="structuredResult"></div>
     </div>
   </div>
 
@@ -284,7 +318,6 @@
     </div>
   </section>
 
-  <!-- Settings bottom sheet -->
   <div id="overlay">
     <div id="sheet">
       <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
@@ -296,41 +329,38 @@
   </div>
 
   <script>
-    // ── Constants ──────────────────────────────────────────────
-    const NOTES_KEY  = 'vnotes_v1';
+    const NOTES_KEY  = 'vnotes_v2';
     const APIKEY_KEY = 'vnotes_apikey';
 
-    // ── Elements ───────────────────────────────────────────────
-    const $  = id => document.getElementById(id);
-    const recordBtn      = $('recordBtn');
-    const statusText     = $('statusText');
-    const transcriptCard = $('transcriptCard');
-    const transcriptText = $('transcriptText');
-    const savedBadge     = $('savedBadge');
-    const notesList      = $('notesList');
-    const emptyState     = $('emptyState');
-    const errorBanner    = $('errorBanner');
-    const noKeyWarning   = $('noKeyWarning');
-    const overlay        = $('overlay');
-    const apiKeyInput    = $('apiKeyInput');
+    const $          = id => document.getElementById(id);
+    const recordBtn  = $('recordBtn');
+    const statusText = $('statusText');
+    const lastCard   = $('lastCard');
+    const rawTranscript   = $('rawTranscript');
+    const structuredResult = $('structuredResult');
+    const savedBadge  = $('savedBadge');
+    const notesList   = $('notesList');
+    const emptyState  = $('emptyState');
+    const errorBanner = $('errorBanner');
+    const noKeyWarning = $('noKeyWarning');
+    const overlay     = $('overlay');
+    const apiKeyInput = $('apiKeyInput');
 
-    // ── State ──────────────────────────────────────────────────
     let mediaRecorder = null;
     let audioChunks   = [];
     let recording     = false;
-    let transcribing  = false;
+    let processing    = false;
 
-    // ── Init ───────────────────────────────────────────────────
-    try { updateKeyWarning(); } catch(e) { console.error('init key warning', e); }
-    try { renderNotes(); }      catch(e) { console.error('init render', e); }
+    // ── Init ──────────────────────────────────────────────────
+    try { updateKeyWarning(); } catch(e) { console.error(e); }
+    try { renderNotes(); }      catch(e) { console.error(e); }
 
-    // ── API key helpers ────────────────────────────────────────
+    // ── API key ───────────────────────────────────────────────
     const getKey = () => { try { return localStorage.getItem(APIKEY_KEY) || ''; } catch { return ''; } };
     function updateKeyWarning() {
       noKeyWarning.classList.toggle('hidden', !!getKey());
     }
 
-    // ── Settings events ────────────────────────────────────────
     noKeyWarning.addEventListener('click', openSettings);
     $('settingsBtn').addEventListener('click', openSettings);
     $('closeBtn').addEventListener('click', closeSettings);
@@ -338,11 +368,10 @@
     $('saveBtn').addEventListener('click', () => {
       const k = apiKeyInput.value.trim();
       if (!k) return;
-      localStorage.setItem(APIKEY_KEY, k);
+      try { localStorage.setItem(APIKEY_KEY, k); } catch {}
       updateKeyWarning();
       closeSettings();
     });
-
     function openSettings() {
       apiKeyInput.value = getKey();
       overlay.classList.add('open');
@@ -350,9 +379,9 @@
     }
     function closeSettings() { overlay.classList.remove('open'); }
 
-    // ── Recording ──────────────────────────────────────────────
+    // ── Recording ─────────────────────────────────────────────
     recordBtn.addEventListener('click', async () => {
-      if (transcribing) return;
+      if (processing) return;
       recording ? stopRecording() : await startRecording();
     });
 
@@ -365,26 +394,20 @@
         showError('Microphone access denied — please allow it in your browser settings.');
         return;
       }
-
-      // Pick best supported MIME type (iOS Safari supports audio/mp4)
-      const mime = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg']
+      const mime = ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg']
         .find(t => MediaRecorder.isTypeSupported(t)) || '';
-
       mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
       audioChunks = [];
-
       mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
       mediaRecorder.onstop = () => {
         stream.getTracks().forEach(t => t.stop());
         const blob = new Blob(audioChunks, { type: mime || 'audio/mp4' });
-        runTranscription(blob, mime);
+        processRecording(blob, mime);
       };
-
       mediaRecorder.start(100);
       recording = true;
       recordBtn.classList.add('recording');
       recordBtn.textContent = '⏹';
-      recordBtn.ariaLabel = 'Stop recording';
       setStatus('Recording…', 'rec');
     }
 
@@ -393,11 +416,10 @@
       recording = false;
       recordBtn.classList.remove('recording');
       recordBtn.textContent = '🎤';
-      recordBtn.ariaLabel = 'Start recording';
     }
 
-    // ── Transcription ──────────────────────────────────────────
-    async function runTranscription(blob, mime) {
+    // ── Pipeline: transcribe → classify → save ────────────────
+    async function processRecording(blob, mime) {
       const apiKey = getKey();
       if (!apiKey) {
         showError('No API key set — tap ⚙️ to add it.');
@@ -405,58 +427,118 @@
         return;
       }
 
-      transcribing = true;
+      processing = true;
       recordBtn.disabled = true;
-      setStatus('Transcribing…', 'xcrb');
 
+      let transcript = '';
       try {
-        const ext = mime.includes('mp4') ? 'm4a'
-                  : mime.includes('webm') ? 'webm' : 'ogg';
+        // Step 1: Whisper
+        setStatus('Transcribing…', 'proc');
+        const ext = mime.includes('mp4') ? 'm4a' : mime.includes('webm') ? 'webm' : 'ogg';
         const form = new FormData();
         form.append('model', 'whisper-1');
         form.append('file', blob, `audio.${ext}`);
-
-        const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+        const r1 = await fetch('https://api.openai.com/v1/audio/transcriptions', {
           method: 'POST',
           headers: { Authorization: `Bearer ${apiKey}` },
           body: form,
         });
-
-        if (!res.ok) {
-          const err = await res.json().catch(() => ({}));
-          throw new Error(err.error?.message || `HTTP ${res.status}`);
-        }
-
-        const { text } = await res.json();
-        const clean = (text || '').trim();
-
-        if (!clean) {
+        if (!r1.ok) throw new Error(`Whisper error ${r1.status}`);
+        const t = await r1.json();
+        transcript = (t.text || '').trim();
+        if (!transcript) {
           showError('No speech detected — try again closer to the microphone.');
-        } else {
-          showTranscript(clean);
-          addNote(clean);
-          renderNotes();
-          flashSaved();
+          return;
         }
+
+        // Step 2: GPT classify
+        setStatus('Classifying…', 'proc');
+        const structured = await classifyNote(transcript, apiKey);
+
+        // Step 3: Save + render
+        const note = { id: Date.now(), createdAt: new Date().toISOString(), transcript, ...structured };
+        addNote(note);
+        renderNotes();
+        showLastCard(note);
+        flashSaved();
+
       } catch (err) {
-        showError(`Transcription failed: ${err.message}`);
+        showError(`Error: ${err.message}`);
       } finally {
-        transcribing = false;
+        processing = false;
         recordBtn.disabled = false;
         setStatus('Tap to record', '');
       }
     }
 
-    // ── UI helpers ─────────────────────────────────────────────
+    async function classifyNote(transcript, apiKey) {
+      const now  = new Date();
+      const day  = now.toLocaleDateString('en-US', { weekday: 'long' });
+      const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+      const system = `You are a productivity assistant. Today is ${day}, ${date}.
+Classify the voice note as "calendar" (event with a specific date/time) or "todo" (task with no fixed time).
+Rules: if a specific date or time is mentioned → calendar. Otherwise → todo. If ambiguous → todo.
+Return ONLY valid JSON, no extra text:
+{"type":"calendar"|"todo","calendar":{"title":"short title","date":"YYYY-MM-DD or null","time":"HH:MM 24h or null","description":"details or null","location":"location or null"},"todo":{"task":"clear actionable task"}}`;
+
+      const r = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${apiKey}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          model: 'gpt-4o-mini',
+          temperature: 0,
+          response_format: { type: 'json_object' },
+          messages: [
+            { role: 'system', content: system },
+            { role: 'user',   content: transcript },
+          ],
+        }),
+      });
+
+      if (!r.ok) throw new Error(`GPT error ${r.status}`);
+      const d = await r.json();
+      return JSON.parse(d.choices[0].message.content);
+    }
+
+    // ── UI ────────────────────────────────────────────────────
     function setStatus(msg, cls) {
       statusText.textContent = msg;
       statusText.className = cls;
     }
-    function showTranscript(text) {
-      transcriptText.textContent = text;
-      transcriptCard.style.display = 'block';
-      savedBadge.classList.remove('show');
+
+    function showLastCard(note) {
+      rawTranscript.textContent = `"${note.transcript}"`;
+      structuredResult.innerHTML = buildStructuredHTML(note);
+      structuredResult.style.display = 'block';
+      lastCard.style.display = 'block';
     }
+
+    function buildStructuredHTML(note) {
+      if (note.type === 'calendar') {
+        const c = note.calendar || {};
+        const dateStr = c.date ? fmtDate(c.date) : '';
+        const timeStr = c.time ? fmtTime(c.time) : '';
+        const when = [dateStr, timeStr].filter(Boolean).join(' · ');
+        return `
+          <div class="s-type-label cal">📅 Calendar event</div>
+          <div class="s-title">${esc(c.title || 'Untitled event')}</div>
+          <div class="s-detail">
+            ${when ? `<span>${when}</span>` : ''}
+            ${c.location ? `<span>📍 ${esc(c.location)}</span>` : ''}
+            ${c.description && c.description !== c.title ? `<span>${esc(c.description)}</span>` : ''}
+          </div>`;
+      } else {
+        const task = note.todo?.task || note.transcript;
+        return `
+          <div class="s-type-label todo">☐ To-do</div>
+          <div class="s-title">${esc(task)}</div>`;
+      }
+    }
+
     function flashSaved() {
       savedBadge.classList.add('show');
       setTimeout(() => savedBadge.classList.remove('show'), 2500);
@@ -464,25 +546,25 @@
     function showError(msg) {
       errorBanner.textContent = msg;
       errorBanner.classList.add('show');
-      setTimeout(() => errorBanner.classList.remove('show'), 6000);
+      setTimeout(() => errorBanner.classList.remove('show'), 7000);
     }
     function hideError() { errorBanner.classList.remove('show'); }
 
-    // ── Notes persistence ──────────────────────────────────────
+    // ── Notes storage ─────────────────────────────────────────
     function loadNotes() {
-      try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; }
-      catch { return []; }
+      try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; } catch { return []; }
     }
-    function addNote(text) {
+    function addNote(note) {
       const notes = loadNotes();
-      notes.unshift({ id: Date.now(), text, date: new Date().toISOString() });
-      localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+      notes.unshift(note);
+      try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
     }
     function deleteNote(id) {
       const notes = loadNotes().filter(n => n.id !== id);
-      localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+      try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
       renderNotes();
     }
+
     function renderNotes() {
       const notes = loadNotes();
       emptyState.style.display = notes.length ? 'none' : 'block';
@@ -490,25 +572,75 @@
       for (const n of notes) {
         const div = document.createElement('div');
         div.className = 'note-card';
-        div.innerHTML = `
-          <div class="note-body">
-            <div class="note-date">${fmtDate(n.date)}</div>
-            <div class="note-text">${esc(n.text)}</div>
-          </div>
-          <button class="note-del" aria-label="Delete">×</button>`;
-        div.querySelector('.note-del').onclick = () => deleteNote(n.id);
+        div.innerHTML = buildNoteCardHTML(n);
+        div.querySelector('.note-del').addEventListener('click', () => deleteNote(n.id));
         notesList.appendChild(div);
       }
     }
 
-    function fmtDate(iso) {
+    function buildNoteCardHTML(n) {
+      const ts = `<div class="note-timestamp">${fmtTimestamp(n.createdAt || n.date)}</div>`;
+      if (n.type === 'calendar') {
+        const c = n.calendar || {};
+        const dateStr = c.date ? fmtDate(c.date) : '';
+        const timeStr = c.time ? fmtTime(c.time) : '';
+        const when = [dateStr, timeStr].filter(Boolean).join(' · ');
+        return `
+          <div class="note-icon">📅</div>
+          <div class="note-body">
+            <div class="note-type-label cal">Calendar</div>
+            <div class="note-title">${esc(c.title || 'Untitled')}</div>
+            <div class="note-sub">
+              ${when ? when + '<br>' : ''}
+              ${c.location ? '📍 ' + esc(c.location) : ''}
+            </div>
+            ${ts}
+          </div>
+          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      } else if (n.type === 'todo') {
+        const task = n.todo?.task || n.transcript;
+        return `
+          <div class="note-icon">☐</div>
+          <div class="note-body">
+            <div class="note-type-label todo">To-do</div>
+            <div class="note-title">${esc(task)}</div>
+            ${ts}
+          </div>
+          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      } else {
+        // legacy plain-text note
+        return `
+          <div class="note-icon">🎙️</div>
+          <div class="note-body">
+            <div class="note-title">${esc(n.text || n.transcript || '')}</div>
+            ${ts}
+          </div>
+          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      }
+    }
+
+    // ── Date/time helpers ─────────────────────────────────────
+    function fmtDate(dateStr) {
+      if (!dateStr) return '';
+      const [y, m, d] = dateStr.split('-').map(Number);
+      return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    }
+    function fmtTime(timeStr) {
+      if (!timeStr) return '';
+      const [h, m] = timeStr.split(':').map(Number);
+      const period = h >= 12 ? 'PM' : 'AM';
+      const h12 = h % 12 || 12;
+      return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+    }
+    function fmtTimestamp(iso) {
+      if (!iso) return '';
       const d = new Date(iso), now = new Date();
       const t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       if (d.toDateString() === now.toDateString()) return `Today, ${t}`;
       return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + `, ${t}`;
     }
     function esc(s) {
-      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
   </script>
 </body>

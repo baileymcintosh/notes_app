@@ -34,6 +34,8 @@
       }
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    button { touch-action: manipulation; }
+    a, [role="button"] { touch-action: manipulation; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
       background: var(--bg);
@@ -201,11 +203,13 @@
     /* ── Settings sheet ── */
     #overlay {
       display: none;
+      pointer-events: none;
       position: fixed; inset: 0;
       background: rgba(0,0,0,.45);
       z-index: 200;
       align-items: flex-end;
     }
+    #overlay.open { pointer-events: auto; }
     #overlay.open { display: flex; }
     #sheet {
       background: var(--card);
@@ -253,7 +257,7 @@
 
   <header>
     <h1>Voice Notes</h1>
-    <button id="settingsBtn" aria-label="Settings">⚙️</button>
+    <button type="button" id="settingsBtn" aria-label="Settings">⚙️</button>
   </header>
 
   <div id="noKeyWarning">Tap here to add your OpenAI API key</div>
@@ -261,7 +265,7 @@
 
   <div id="recordSection">
     <p id="statusText">Tap to record</p>
-    <button id="recordBtn" aria-label="Start recording">🎤</button>
+    <button type="button" id="recordBtn" aria-label="Start recording">🎤</button>
     <div id="transcriptCard">
       <div class="card-meta">
         <span>Last recording</span>
@@ -283,11 +287,11 @@
   <!-- Settings bottom sheet -->
   <div id="overlay">
     <div id="sheet">
-      <h2>Settings <button id="closeBtn" aria-label="Close">✕</button></h2>
+      <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
       <label for="apiKeyInput">OpenAI API Key</label>
       <input id="apiKeyInput" type="password" placeholder="sk-proj-…"
              autocomplete="off" autocorrect="off" spellcheck="false" />
-      <button id="saveBtn">Save</button>
+      <button type="button" id="saveBtn">Save</button>
     </div>
   </div>
 
@@ -317,11 +321,11 @@
     let transcribing  = false;
 
     // ── Init ───────────────────────────────────────────────────
-    updateKeyWarning();
-    renderNotes();
+    try { updateKeyWarning(); } catch(e) { console.error('init key warning', e); }
+    try { renderNotes(); }      catch(e) { console.error('init render', e); }
 
     // ── API key helpers ────────────────────────────────────────
-    const getKey = () => localStorage.getItem(APIKEY_KEY) || '';
+    const getKey = () => { try { return localStorage.getItem(APIKEY_KEY) || ''; } catch { return ''; } };
     function updateKeyWarning() {
       noKeyWarning.classList.toggle('hidden', !!getKey());
     }

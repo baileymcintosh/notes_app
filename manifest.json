@@ -1,0 +1,10 @@
+{
+  "name": "Voice Notes",
+  "short_name": "Voice Notes",
+  "description": "Record voice notes, transcribed by Whisper",
+  "start_url": ".",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F2F2F7",
+  "theme_color": "#007AFF"
+}

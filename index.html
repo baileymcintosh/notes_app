@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Voice Notes" />
+  <link rel="manifest" href="manifest.json" />
+  <title>Voice Notes</title>
+  <style>
+    :root {
+      --accent:    #007AFF;
+      --danger:    #FF3B30;
+      --green:     #34C759;
+      --orange:    #FF9F0A;
+      --bg:        #F2F2F7;
+      --card:      #FFFFFF;
+      --label:     #000000;
+      --secondary: #6C6C70;
+      --border:    rgba(60,60,67,0.12);
+      --st: env(safe-area-inset-top,    0px);
+      --sb: env(safe-area-inset-bottom, 0px);
+      --sl: env(safe-area-inset-left,   0px);
+      --sr: env(safe-area-inset-right,  0px);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:        #000000;
+        --card:      #1C1C1E;
+        --label:     #FFFFFF;
+        --secondary: #8E8E93;
+        --border:    rgba(84,84,88,0.6);
+      }
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      background: var(--bg);
+      color: var(--label);
+      min-height: 100dvh;
+      padding-top:    max(var(--st), 16px);
+      padding-bottom: max(var(--sb), 24px);
+      padding-left:   calc(var(--sl) + 16px);
+      padding-right:  calc(var(--sr) + 16px);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── Header ── */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 28px;
+    }
+    header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.4px; }
+    #settingsBtn {
+      background: none; border: none;
+      font-size: 22px; cursor: pointer;
+      padding: 6px; opacity: 0.75;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    /* ── Key warning ── */
+    #noKeyWarning {
+      background: rgba(255,159,10,.12);
+      border: 1px solid rgba(255,159,10,.3);
+      color: var(--orange);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      text-align: center;
+    }
+    #noKeyWarning.hidden { display: none; }
+
+    /* ── Error banner ── */
+    #errorBanner {
+      background: rgba(255,59,48,.1);
+      border: 1px solid rgba(255,59,48,.25);
+      color: var(--danger);
+      border-radius: 10px;
+      padding: 11px 14px;
+      font-size: 14px;
+      margin-bottom: 20px;
+      display: none;
+    }
+    #errorBanner.show { display: block; }
+
+    /* ── Record section ── */
+    #recordSection {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 22px;
+      margin-bottom: 36px;
+    }
+    #statusText {
+      font-size: 16px;
+      color: var(--secondary);
+      min-height: 22px;
+      transition: color 0.2s;
+    }
+    #statusText.rec  { color: var(--danger); font-weight: 600; }
+    #statusText.xcrb { color: var(--accent); }
+
+    #recordBtn {
+      width: 96px; height: 96px;
+      border-radius: 50%;
+      border: none;
+      background: var(--accent);
+      color: #fff;
+      font-size: 40px;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 4px 20px rgba(0,122,255,.35);
+      transition: transform .15s, background .2s, box-shadow .2s;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #recordBtn.recording {
+      background: var(--danger);
+      box-shadow: 0 4px 20px rgba(255,59,48,.4);
+      animation: pulse 1.4s ease-in-out infinite;
+    }
+    #recordBtn:disabled { opacity: 0.45; cursor: default; animation: none; }
+    #recordBtn:active:not(:disabled) { transform: scale(0.92); }
+    @keyframes pulse {
+      0%,100% { transform: scale(1); }
+      50%      { transform: scale(1.07); }
+    }
+
+    /* ── Transcript card ── */
+    #transcriptCard {
+      width: 100%;
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: none;
+    }
+    .card-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 6px;
+    }
+    .card-meta span:first-child { font-size: 12px; color: var(--secondary); }
+    #savedBadge {
+      font-size: 12px; font-weight: 600;
+      color: var(--green);
+      opacity: 0; transition: opacity .3s;
+    }
+    #savedBadge.show { opacity: 1; }
+    #transcriptText { font-size: 15px; line-height: 1.55; }
+
+    /* ── Notes section ── */
+    #notesSection h2 {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--secondary);
+      text-transform: uppercase;
+      letter-spacing: .6px;
+      margin-bottom: 10px;
+      padding-left: 4px;
+    }
+    #notesList { display: flex; flex-direction: column; gap: 8px; }
+    .note-card {
+      background: var(--card);
+      border-radius: 12px;
+      padding: 14px 16px;
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+    }
+    .note-body { flex: 1; min-width: 0; }
+    .note-date  { font-size: 12px; color: var(--secondary); margin-bottom: 4px; }
+    .note-text  {
+      font-size: 15px; line-height: 1.5;
+      overflow: hidden;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+    }
+    .note-del {
+      background: none; border: none;
+      color: var(--secondary);
+      font-size: 20px; line-height: 1;
+      cursor: pointer; padding: 0 0 0 6px;
+      flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .note-del:active { color: var(--danger); }
+
+    #emptyState {
+      text-align: center;
+      color: var(--secondary);
+      padding: 32px 0;
+    }
+    #emptyState .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+
+    /* ── Settings sheet ── */
+    #overlay {
+      display: none;
+      position: fixed; inset: 0;
+      background: rgba(0,0,0,.45);
+      z-index: 200;
+      align-items: flex-end;
+    }
+    #overlay.open { display: flex; }
+    #sheet {
+      background: var(--card);
+      border-radius: 18px 18px 0 0;
+      padding: 20px 20px calc(max(var(--sb), 16px) + 4px);
+      width: 100%; max-width: 560px; margin: 0 auto;
+    }
+    #sheet h2 {
+      font-size: 18px; font-weight: 600;
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: 22px;
+    }
+    #closeBtn {
+      background: none; border: none;
+      font-size: 20px; color: var(--secondary);
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #sheet label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; }
+    #apiKeyInput {
+      width: 100%;
+      padding: 12px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--label);
+      font-size: 14px;
+      font-family: 'Menlo', 'SF Mono', monospace;
+      margin-bottom: 16px;
+      -webkit-appearance: none;
+    }
+    #apiKeyInput:focus { outline: none; border-color: var(--accent); }
+    #saveBtn {
+      width: 100%;
+      background: var(--accent); color: #fff;
+      border: none; border-radius: 12px;
+      padding: 14px; font-size: 16px; font-weight: 600;
+      cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    #saveBtn:active { opacity: .85; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Voice Notes</h1>
+    <button id="settingsBtn" aria-label="Settings">⚙️</button>
+  </header>
+
+  <div id="noKeyWarning">Tap here to add your OpenAI API key</div>
+  <div id="errorBanner"></div>
+
+  <div id="recordSection">
+    <p id="statusText">Tap to record</p>
+    <button id="recordBtn" aria-label="Start recording">🎤</button>
+    <div id="transcriptCard">
+      <div class="card-meta">
+        <span>Last recording</span>
+        <span id="savedBadge">✓ Saved</span>
+      </div>
+      <p id="transcriptText"></p>
+    </div>
+  </div>
+
+  <section id="notesSection">
+    <h2>Notes</h2>
+    <div id="notesList"></div>
+    <div id="emptyState">
+      <span class="icon">🎙️</span>
+      Record your first voice note
+    </div>
+  </section>
+
+  <!-- Settings bottom sheet -->
+  <div id="overlay">
+    <div id="sheet">
+      <h2>Settings <button id="closeBtn" aria-label="Close">✕</button></h2>
+      <label for="apiKeyInput">OpenAI API Key</label>
+      <input id="apiKeyInput" type="password" placeholder="sk-proj-…"
+             autocomplete="off" autocorrect="off" spellcheck="false" />
+      <button id="saveBtn">Save</button>
+    </div>
+  </div>
+
+  <script>
+    // ── Constants ──────────────────────────────────────────────
+    const NOTES_KEY  = 'vnotes_v1';
+    const APIKEY_KEY = 'vnotes_apikey';
+
+    // ── Elements ───────────────────────────────────────────────
+    const $  = id => document.getElementById(id);
+    const recordBtn      = $('recordBtn');
+    const statusText     = $('statusText');
+    const transcriptCard = $('transcriptCard');
+    const transcriptText = $('transcriptText');
+    const savedBadge     = $('savedBadge');
+    const notesList      = $('notesList');
+    const emptyState     = $('emptyState');
+    const errorBanner    = $('errorBanner');
+    const noKeyWarning   = $('noKeyWarning');
+    const overlay        = $('overlay');
+    const apiKeyInput    = $('apiKeyInput');
+
+    // ── State ──────────────────────────────────────────────────
+    let mediaRecorder = null;
+    let audioChunks   = [];
+    let recording     = false;
+    let transcribing  = false;
+
+    // ── Init ───────────────────────────────────────────────────
+    updateKeyWarning();
+    renderNotes();
+
+    // ── API key helpers ────────────────────────────────────────
+    const getKey = () => localStorage.getItem(APIKEY_KEY) || '';
+    function updateKeyWarning() {
+      noKeyWarning.classList.toggle('hidden', !!getKey());
+    }
+
+    // ── Settings events ────────────────────────────────────────
+    noKeyWarning.addEventListener('click', openSettings);
+    $('settingsBtn').addEventListener('click', openSettings);
+    $('closeBtn').addEventListener('click', closeSettings);
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeSettings(); });
+    $('saveBtn').addEventListener('click', () => {
+      const k = apiKeyInput.value.trim();
+      if (!k) return;
+      localStorage.setItem(APIKEY_KEY, k);
+      updateKeyWarning();
+      closeSettings();
+    });
+
+    function openSettings() {
+      apiKeyInput.value = getKey();
+      overlay.classList.add('open');
+      setTimeout(() => apiKeyInput.focus(), 50);
+    }
+    function closeSettings() { overlay.classList.remove('open'); }
+
+    // ── Recording ──────────────────────────────────────────────
+    recordBtn.addEventListener('click', async () => {
+      if (transcribing) return;
+      recording ? stopRecording() : await startRecording();
+    });
+
+    async function startRecording() {
+      hideError();
+      let stream;
+      try {
+        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      } catch {
+        showError('Microphone access denied — please allow it in your browser settings.');
+        return;
+      }
+
+      // Pick best supported MIME type (iOS Safari supports audio/mp4)
+      const mime = ['audio/mp4', 'audio/webm;codecs=opus', 'audio/webm', 'audio/ogg']
+        .find(t => MediaRecorder.isTypeSupported(t)) || '';
+
+      mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
+      audioChunks = [];
+
+      mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
+      mediaRecorder.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        const blob = new Blob(audioChunks, { type: mime || 'audio/mp4' });
+        runTranscription(blob, mime);
+      };
+
+      mediaRecorder.start(100);
+      recording = true;
+      recordBtn.classList.add('recording');
+      recordBtn.textContent = '⏹';
+      recordBtn.ariaLabel = 'Stop recording';
+      setStatus('Recording…', 'rec');
+    }
+
+    function stopRecording() {
+      if (mediaRecorder?.state !== 'inactive') mediaRecorder.stop();
+      recording = false;
+      recordBtn.classList.remove('recording');
+      recordBtn.textContent = '🎤';
+      recordBtn.ariaLabel = 'Start recording';
+    }
+
+    // ── Transcription ──────────────────────────────────────────
+    async function runTranscription(blob, mime) {
+      const apiKey = getKey();
+      if (!apiKey) {
+        showError('No API key set — tap ⚙️ to add it.');
+        setStatus('Tap to record', '');
+        return;
+      }
+
+      transcribing = true;
+      recordBtn.disabled = true;
+      setStatus('Transcribing…', 'xcrb');
+
+      try {
+        const ext = mime.includes('mp4') ? 'm4a'
+                  : mime.includes('webm') ? 'webm' : 'ogg';
+        const form = new FormData();
+        form.append('model', 'whisper-1');
+        form.append('file', blob, `audio.${ext}`);
+
+        const res = await fetch('https://api.openai.com/v1/audio/transcriptions', {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${apiKey}` },
+          body: form,
+        });
+
+        if (!res.ok) {
+          const err = await res.json().catch(() => ({}));
+          throw new Error(err.error?.message || `HTTP ${res.status}`);
+        }
+
+        const { text } = await res.json();
+        const clean = (text || '').trim();
+
+        if (!clean) {
+          showError('No speech detected — try again closer to the microphone.');
+        } else {
+          showTranscript(clean);
+          addNote(clean);
+          renderNotes();
+          flashSaved();
+        }
+      } catch (err) {
+        showError(`Transcription failed: ${err.message}`);
+      } finally {
+        transcribing = false;
+        recordBtn.disabled = false;
+        setStatus('Tap to record', '');
+      }
+    }
+
+    // ── UI helpers ─────────────────────────────────────────────
+    function setStatus(msg, cls) {
+      statusText.textContent = msg;
+      statusText.className = cls;
+    }
+    function showTranscript(text) {
+      transcriptText.textContent = text;
+      transcriptCard.style.display = 'block';
+      savedBadge.classList.remove('show');
+    }
+    function flashSaved() {
+      savedBadge.classList.add('show');
+      setTimeout(() => savedBadge.classList.remove('show'), 2500);
+    }
+    function showError(msg) {
+      errorBanner.textContent = msg;
+      errorBanner.classList.add('show');
+      setTimeout(() => errorBanner.classList.remove('show'), 6000);
+    }
+    function hideError() { errorBanner.classList.remove('show'); }
+
+    // ── Notes persistence ──────────────────────────────────────
+    function loadNotes() {
+      try { return JSON.parse(localStorage.getItem(NOTES_KEY)) || []; }
+      catch { return []; }
+    }
+    function addNote(text) {
+      const notes = loadNotes();
+      notes.unshift({ id: Date.now(), text, date: new Date().toISOString() });
+      localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+    }
+    function deleteNote(id) {
+      const notes = loadNotes().filter(n => n.id !== id);
+      localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+      renderNotes();
+    }
+    function renderNotes() {
+      const notes = loadNotes();
+      emptyState.style.display = notes.length ? 'none' : 'block';
+      notesList.innerHTML = '';
+      for (const n of notes) {
+        const div = document.createElement('div');
+        div.className = 'note-card';
+        div.innerHTML = `
+          <div class="note-body">
+            <div class="note-date">${fmtDate(n.date)}</div>
+            <div class="note-text">${esc(n.text)}</div>
+          </div>
+          <button class="note-del" aria-label="Delete">×</button>`;
+        div.querySelector('.note-del').onclick = () => deleteNote(n.id);
+        notesList.appendChild(div);
+      }
+    }
+
+    function fmtDate(iso) {
+      const d = new Date(iso), now = new Date();
+      const t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      if (d.toDateString() === now.toDateString()) return `Today, ${t}`;
+      return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + `, ${t}`;
+    }
+    function esc(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,13 @@
+# Xcode
+*.xcuserstate
+xcuserdata/
+*.xcworkspace/xcuserdata/
+DerivedData/
+.build/
+
+# Secrets — never commit your API key
+Secrets.swift
+NotesApp/Secrets.swift
+
+# macOS
+.DS_Store

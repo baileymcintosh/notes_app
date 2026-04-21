@@ -8,6 +8,7 @@
   <meta name="apple-mobile-web-app-title" content="Voice Notes" />
   <link rel="manifest" href="manifest.json" />
   <title>Voice Notes</title>
+  <script src="https://accounts.google.com/gsi/client" async></script>
   <style>
     :root {
       --accent:    #007AFF;
@@ -103,8 +104,8 @@
       min-height: 22px;
       transition: color 0.2s;
     }
-    #statusText.rec   { color: var(--danger); font-weight: 600; }
-    #statusText.proc  { color: var(--accent); }
+    #statusText.rec  { color: var(--danger); font-weight: 600; }
+    #statusText.proc { color: var(--accent); }
 
     #recordBtn {
       width: 96px; height: 96px;
@@ -144,14 +145,21 @@
       justify-content: space-between;
       align-items: center;
       margin-bottom: 8px;
+      gap: 8px;
     }
-    .card-meta span:first-child { font-size: 12px; color: var(--secondary); }
-    #savedBadge {
-      font-size: 12px; font-weight: 600;
-      color: var(--green);
+    .card-meta span:first-child { font-size: 12px; color: var(--secondary); flex-shrink: 0; }
+    .card-badges { display: flex; gap: 6px; align-items: center; }
+    .badge {
+      font-size: 11px; font-weight: 600;
+      padding: 2px 7px;
+      border-radius: 20px;
       opacity: 0; transition: opacity .3s;
     }
-    #savedBadge.show { opacity: 1; }
+    .badge.show { opacity: 1; }
+    .badge.saved  { background: rgba(52,199,89,.15);  color: var(--green); }
+    .badge.google { background: rgba(0,122,255,.12); color: var(--accent); }
+    .badge.err    { background: rgba(255,59,48,.12);  color: var(--danger); }
+
     #rawTranscript {
       font-size: 14px;
       color: var(--secondary);
@@ -163,85 +171,58 @@
     }
     #structuredResult { display: none; }
 
-    /* ── Structured display (shared) ── */
     .s-type-label {
-      font-size: 11px;
-      font-weight: 700;
-      letter-spacing: .6px;
-      text-transform: uppercase;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: .6px; text-transform: uppercase;
       margin-bottom: 6px;
     }
-    .s-type-label.cal { color: var(--accent); }
+    .s-type-label.cal  { color: var(--accent); }
     .s-type-label.todo { color: var(--purple); }
-
-    .s-title   { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-    .s-detail  { font-size: 13px; color: var(--secondary); line-height: 1.5; }
+    .s-title  { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
+    .s-detail { font-size: 13px; color: var(--secondary); line-height: 1.5; }
     .s-detail span { display: block; }
 
-    /* ── Notes section ── */
+    /* ── Notes list ── */
     #notesSection h2 {
-      font-size: 12px;
-      font-weight: 600;
+      font-size: 12px; font-weight: 600;
       color: var(--secondary);
-      text-transform: uppercase;
-      letter-spacing: .6px;
-      margin-bottom: 10px;
-      padding-left: 4px;
+      text-transform: uppercase; letter-spacing: .6px;
+      margin-bottom: 10px; padding-left: 4px;
     }
     #notesList { display: flex; flex-direction: column; gap: 8px; }
-
     .note-card {
       background: var(--card);
       border-radius: 12px;
       padding: 14px 16px;
-      display: flex;
-      align-items: flex-start;
-      gap: 12px;
+      display: flex; align-items: flex-start; gap: 12px;
     }
-    .note-icon {
-      font-size: 20px;
-      flex-shrink: 0;
-      margin-top: 1px;
-    }
+    .note-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
     .note-body { flex: 1; min-width: 0; }
     .note-type-label {
-      font-size: 10px;
-      font-weight: 700;
-      letter-spacing: .5px;
-      text-transform: uppercase;
-      margin-bottom: 3px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px;
     }
     .note-type-label.cal  { color: var(--accent); }
     .note-type-label.todo { color: var(--purple); }
     .note-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
     .note-sub   { font-size: 13px; color: var(--secondary); line-height: 1.4; }
     .note-timestamp { font-size: 11px; color: var(--secondary); margin-top: 5px; }
-
     .note-del {
       background: none; border: none;
-      color: var(--secondary);
-      font-size: 20px; line-height: 1;
-      cursor: pointer; padding: 0 0 0 6px;
-      flex-shrink: 0;
+      color: var(--secondary); font-size: 20px; line-height: 1;
+      cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
     }
     .note-del:active { color: var(--danger); }
-
-    #emptyState {
-      text-align: center;
-      color: var(--secondary);
-      padding: 32px 0;
-    }
+    #emptyState { text-align: center; color: var(--secondary); padding: 32px 0; }
     #emptyState .icon { font-size: 40px; display: block; margin-bottom: 10px; }
 
     /* ── Settings sheet ── */
     #overlay {
-      display: none;
-      pointer-events: none;
+      display: none; pointer-events: none;
       position: fixed; inset: 0;
       background: rgba(0,0,0,.45);
-      z-index: 200;
-      align-items: flex-end;
+      z-index: 200; align-items: flex-end;
     }
     #overlay.open { display: flex; pointer-events: auto; }
     #sheet {
@@ -257,33 +238,39 @@
     }
     #closeBtn {
       background: none; border: none;
-      font-size: 20px; color: var(--secondary);
-      cursor: pointer;
+      font-size: 20px; color: var(--secondary); cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
-    #sheet label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; }
+    .setting-label {
+      font-size: 13px; color: var(--secondary);
+      display: block; margin-bottom: 8px;
+    }
     #apiKeyInput {
-      width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
-      border: 1px solid var(--border);
-      background: var(--bg);
-      color: var(--label);
-      font-size: 14px;
-      font-family: 'Menlo', 'SF Mono', monospace;
-      margin-bottom: 16px;
-      -webkit-appearance: none;
+      width: 100%; padding: 12px 14px;
+      border-radius: 10px; border: 1px solid var(--border);
+      background: var(--bg); color: var(--label);
+      font-size: 14px; font-family: 'Menlo','SF Mono',monospace;
+      margin-bottom: 12px; -webkit-appearance: none;
     }
     #apiKeyInput:focus { outline: none; border-color: var(--accent); }
-    #saveBtn {
-      width: 100%;
-      background: var(--accent); color: #fff;
-      border: none; border-radius: 12px;
-      padding: 14px; font-size: 16px; font-weight: 600;
-      cursor: pointer;
+    .setting-btn {
+      width: 100%; border: none; border-radius: 12px;
+      padding: 13px; font-size: 15px; font-weight: 600;
+      cursor: pointer; margin-bottom: 10px;
       -webkit-tap-highlight-color: transparent;
+      transition: background .2s;
     }
-    #saveBtn:active { opacity: .85; }
+    #saveKeyBtn  { background: var(--accent); color: #fff; }
+    #googleBtn   { background: var(--accent); color: #fff; }
+    #googleBtn.connected { background: rgba(52,199,89,.15); color: var(--green); }
+    .setting-divider {
+      border: none; border-top: 1px solid var(--border); margin: 18px 0;
+    }
+    #googleStatus {
+      font-size: 13px; color: var(--secondary);
+      min-height: 18px; padding-left: 2px;
+    }
+    #googleStatus.ok { color: var(--green); }
   </style>
 </head>
 <body>
@@ -302,7 +289,10 @@
     <div id="lastCard">
       <div class="card-meta">
         <span>Last recording</span>
-        <span id="savedBadge">✓ Saved</span>
+        <div class="card-badges">
+          <span class="badge saved"  id="savedBadge">✓ Saved</span>
+          <span class="badge google" id="googleBadge"></span>
+        </div>
       </div>
       <p id="rawTranscript"></p>
       <div id="structuredResult"></div>
@@ -321,51 +311,72 @@
   <div id="overlay">
     <div id="sheet">
       <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
-      <label for="apiKeyInput">OpenAI API Key</label>
+
+      <label class="setting-label" for="apiKeyInput">OpenAI API Key</label>
       <input id="apiKeyInput" type="password" placeholder="sk-proj-…"
              autocomplete="off" autocorrect="off" spellcheck="false" />
-      <button type="button" id="saveBtn">Save</button>
+      <button type="button" id="saveKeyBtn" class="setting-btn">Save Key</button>
+
+      <hr class="setting-divider" />
+
+      <label class="setting-label">Google Calendar &amp; Tasks</label>
+      <button type="button" id="googleBtn" class="setting-btn">Connect Google</button>
+      <p id="googleStatus"></p>
     </div>
   </div>
 
   <script>
+    // ── Config ────────────────────────────────────────────────
+    const CLIENT_ID  = '860829037272-7v04peuuldifutj46eo2jlvfoo7nc70g.apps.googleusercontent.com';
+    const GSCOPES    = 'https://www.googleapis.com/auth/calendar.events https://www.googleapis.com/auth/tasks';
     const NOTES_KEY  = 'vnotes_v2';
     const APIKEY_KEY = 'vnotes_apikey';
+    const GCONN_KEY  = 'vnotes_gconnected';
 
-    const $          = id => document.getElementById(id);
-    const recordBtn  = $('recordBtn');
-    const statusText = $('statusText');
-    const lastCard   = $('lastCard');
-    const rawTranscript   = $('rawTranscript');
-    const structuredResult = $('structuredResult');
-    const savedBadge  = $('savedBadge');
-    const notesList   = $('notesList');
-    const emptyState  = $('emptyState');
-    const errorBanner = $('errorBanner');
-    const noKeyWarning = $('noKeyWarning');
-    const overlay     = $('overlay');
-    const apiKeyInput = $('apiKeyInput');
+    // ── Elements ──────────────────────────────────────────────
+    const $             = id => document.getElementById(id);
+    const recordBtn     = $('recordBtn');
+    const statusText    = $('statusText');
+    const lastCard      = $('lastCard');
+    const rawTranscript = $('rawTranscript');
+    const structResult  = $('structuredResult');
+    const savedBadge    = $('savedBadge');
+    const googleBadge   = $('googleBadge');
+    const notesList     = $('notesList');
+    const emptyState    = $('emptyState');
+    const errorBanner   = $('errorBanner');
+    const noKeyWarning  = $('noKeyWarning');
+    const overlay       = $('overlay');
+    const apiKeyInput   = $('apiKeyInput');
+    const googleBtn     = $('googleBtn');
+    const googleStatus  = $('googleStatus');
 
+    // ── State ─────────────────────────────────────────────────
     let mediaRecorder = null;
     let audioChunks   = [];
     let recording     = false;
     let processing    = false;
 
+    // Google
+    let tokenClient = null;
+    let gToken      = null;
+    let gExpiry     = 0;
+
     // ── Init ──────────────────────────────────────────────────
     try { updateKeyWarning(); } catch(e) { console.error(e); }
     try { renderNotes(); }      catch(e) { console.error(e); }
+    try { maybeSilentGoogleAuth(); } catch(e) {}
 
-    // ── API key ───────────────────────────────────────────────
+    // ── OpenAI key ────────────────────────────────────────────
     const getKey = () => { try { return localStorage.getItem(APIKEY_KEY) || ''; } catch { return ''; } };
     function updateKeyWarning() {
       noKeyWarning.classList.toggle('hidden', !!getKey());
     }
-
     noKeyWarning.addEventListener('click', openSettings);
     $('settingsBtn').addEventListener('click', openSettings);
     $('closeBtn').addEventListener('click', closeSettings);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeSettings(); });
-    $('saveBtn').addEventListener('click', () => {
+    $('saveKeyBtn').addEventListener('click', () => {
       const k = apiKeyInput.value.trim();
       if (!k) return;
       try { localStorage.setItem(APIKEY_KEY, k); } catch {}
@@ -374,10 +385,73 @@
     });
     function openSettings() {
       apiKeyInput.value = getKey();
+      updateGoogleUI();
       overlay.classList.add('open');
       setTimeout(() => apiKeyInput.focus(), 50);
     }
     function closeSettings() { overlay.classList.remove('open'); }
+
+    // ── Google OAuth ──────────────────────────────────────────
+    const isGoogleReady = () => !!gToken && Date.now() < gExpiry;
+
+    function initGoogleTokenClient(callback) {
+      if (!window.google?.accounts?.oauth2) return false;
+      tokenClient = google.accounts.oauth2.initTokenClient({
+        client_id: CLIENT_ID,
+        scope: GSCOPES,
+        callback: resp => {
+          if (resp.error) {
+            showError('Google sign-in failed: ' + resp.error);
+            updateGoogleUI();
+            return;
+          }
+          gToken  = resp.access_token;
+          gExpiry = Date.now() + (resp.expires_in - 60) * 1000;
+          try { localStorage.setItem(GCONN_KEY, '1'); } catch {}
+          updateGoogleUI();
+          if (callback) callback();
+        },
+      });
+      return true;
+    }
+
+    function connectGoogle() {
+      const ready = initGoogleTokenClient();
+      if (!ready) {
+        showError('Google library not loaded yet — try again in a moment.');
+        return;
+      }
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    }
+
+    function disconnectGoogle() {
+      if (gToken) google.accounts.oauth2.revoke(gToken, () => {});
+      gToken = null; gExpiry = 0;
+      try { localStorage.removeItem(GCONN_KEY); } catch {}
+      updateGoogleUI();
+    }
+
+    function maybeSilentGoogleAuth() {
+      try { if (!localStorage.getItem(GCONN_KEY)) return; } catch { return; }
+      const tryIt = () => {
+        if (!window.google?.accounts?.oauth2) { setTimeout(tryIt, 600); return; }
+        initGoogleTokenClient();
+        if (tokenClient) tokenClient.requestAccessToken({ prompt: '' });
+      };
+      setTimeout(tryIt, 800);
+    }
+
+    function updateGoogleUI() {
+      const ok = isGoogleReady();
+      googleBtn.textContent = ok ? 'Disconnect Google' : 'Connect Google';
+      googleBtn.classList.toggle('connected', ok);
+      googleStatus.textContent = ok ? '✓ Google Calendar & Tasks connected' : '';
+      googleStatus.className = ok ? 'ok' : '';
+    }
+
+    googleBtn.addEventListener('click', () => {
+      isGoogleReady() ? disconnectGoogle() : connectGoogle();
+    });
 
     // ── Recording ─────────────────────────────────────────────
     recordBtn.addEventListener('click', async () => {
@@ -401,8 +475,7 @@
       mediaRecorder.ondataavailable = e => { if (e.data.size > 0) audioChunks.push(e.data); };
       mediaRecorder.onstop = () => {
         stream.getTracks().forEach(t => t.stop());
-        const blob = new Blob(audioChunks, { type: mime || 'audio/mp4' });
-        processRecording(blob, mime);
+        processRecording(new Blob(audioChunks, { type: mime || 'audio/mp4' }), mime);
       };
       mediaRecorder.start(100);
       recording = true;
@@ -418,7 +491,7 @@
       recordBtn.textContent = '🎤';
     }
 
-    // ── Pipeline: transcribe → classify → save ────────────────
+    // ── Pipeline ──────────────────────────────────────────────
     async function processRecording(blob, mime) {
       const apiKey = getKey();
       if (!apiKey) {
@@ -426,15 +499,13 @@
         setStatus('Tap to record', '');
         return;
       }
-
       processing = true;
       recordBtn.disabled = true;
 
-      let transcript = '';
       try {
-        // Step 1: Whisper
+        // 1. Whisper
         setStatus('Transcribing…', 'proc');
-        const ext = mime.includes('mp4') ? 'm4a' : mime.includes('webm') ? 'webm' : 'ogg';
+        const ext  = mime.includes('mp4') ? 'm4a' : mime.includes('webm') ? 'webm' : 'ogg';
         const form = new FormData();
         form.append('model', 'whisper-1');
         form.append('file', blob, `audio.${ext}`);
@@ -443,24 +514,38 @@
           headers: { Authorization: `Bearer ${apiKey}` },
           body: form,
         });
-        if (!r1.ok) throw new Error(`Whisper error ${r1.status}`);
-        const t = await r1.json();
-        transcript = (t.text || '').trim();
-        if (!transcript) {
-          showError('No speech detected — try again closer to the microphone.');
-          return;
-        }
+        if (!r1.ok) throw new Error(`Whisper ${r1.status}`);
+        const transcript = ((await r1.json()).text || '').trim();
+        if (!transcript) { showError('No speech detected — try again.'); return; }
 
-        // Step 2: GPT classify
+        // 2. Classify
         setStatus('Classifying…', 'proc');
         const structured = await classifyNote(transcript, apiKey);
-
-        // Step 3: Save + render
         const note = { id: Date.now(), createdAt: new Date().toISOString(), transcript, ...structured };
         addNote(note);
         renderNotes();
         showLastCard(note);
-        flashSaved();
+        flashBadge(savedBadge);
+
+        // 3. Push to Google
+        if (isGoogleReady()) {
+          setStatus('Saving to Google…', 'proc');
+          try {
+            if (note.type === 'calendar') {
+              await createCalendarEvent(note.calendar);
+              googleBadge.textContent = '✓ Calendar';
+            } else {
+              await createGoogleTask(note.todo?.task || note.transcript);
+              googleBadge.textContent = '✓ Tasks';
+            }
+            flashBadge(googleBadge);
+          } catch (e) {
+            googleBadge.textContent = 'Google sync failed';
+            googleBadge.classList.add('err');
+            flashBadge(googleBadge);
+            console.error('Google sync:', e);
+          }
+        }
 
       } catch (err) {
         showError(`Error: ${err.message}`);
@@ -471,26 +556,22 @@
       }
     }
 
+    // ── GPT classify ──────────────────────────────────────────
     async function classifyNote(transcript, apiKey) {
       const now  = new Date();
       const day  = now.toLocaleDateString('en-US', { weekday: 'long' });
       const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-
       const system = `You are a productivity assistant. Today is ${day}, ${date}.
-Classify the voice note as "calendar" (event with a specific date/time) or "todo" (task with no fixed time).
-Rules: if a specific date or time is mentioned → calendar. Otherwise → todo. If ambiguous → todo.
-Return ONLY valid JSON, no extra text:
+Classify the voice note as "calendar" (event with specific date/time) or "todo" (task, no fixed time).
+If a specific date or time is mentioned → calendar. Otherwise → todo. Ambiguous → todo.
+Return ONLY valid JSON:
 {"type":"calendar"|"todo","calendar":{"title":"short title","date":"YYYY-MM-DD or null","time":"HH:MM 24h or null","description":"details or null","location":"location or null"},"todo":{"task":"clear actionable task"}}`;
 
       const r = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
-        headers: {
-          Authorization: `Bearer ${apiKey}`,
-          'Content-Type': 'application/json',
-        },
+        headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          model: 'gpt-4o-mini',
-          temperature: 0,
+          model: 'gpt-4o-mini', temperature: 0,
           response_format: { type: 'json_object' },
           messages: [
             { role: 'system', content: system },
@@ -498,50 +579,88 @@ Return ONLY valid JSON, no extra text:
           ],
         }),
       });
-
-      if (!r.ok) throw new Error(`GPT error ${r.status}`);
-      const d = await r.json();
-      return JSON.parse(d.choices[0].message.content);
+      if (!r.ok) throw new Error(`GPT ${r.status}`);
+      return JSON.parse((await r.json()).choices[0].message.content);
     }
 
-    // ── UI ────────────────────────────────────────────────────
-    function setStatus(msg, cls) {
-      statusText.textContent = msg;
-      statusText.className = cls;
+    // ── Google Calendar ───────────────────────────────────────
+    async function createCalendarEvent(cal) {
+      const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
+      let start, end;
+
+      if (cal.date && cal.time) {
+        const [h, m] = cal.time.split(':').map(Number);
+        const endH   = String((h + 1) % 24).padStart(2, '0');
+        const endMin = String(m).padStart(2, '0');
+        start = { dateTime: `${cal.date}T${cal.time}:00`, timeZone: tz };
+        end   = { dateTime: `${cal.date}T${endH}:${endMin}:00`, timeZone: tz };
+      } else {
+        const d = cal.date || new Date().toISOString().split('T')[0];
+        const next = new Date(d + 'T00:00:00');
+        next.setDate(next.getDate() + 1);
+        start = { date: d };
+        end   = { date: next.toISOString().split('T')[0] };
+      }
+
+      const event = {
+        summary: cal.title || 'Untitled event',
+        start, end,
+        ...(cal.description && { description: cal.description }),
+        ...(cal.location    && { location: cal.location }),
+      };
+
+      const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${gToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify(event),
+      });
+      if (r.status === 401) { gToken = null; updateGoogleUI(); }
+      if (!r.ok) throw new Error(`Calendar API ${r.status}`);
+      return r.json();
     }
+
+    // ── Google Tasks ──────────────────────────────────────────
+    async function createGoogleTask(title) {
+      const r = await fetch('https://tasks.googleapis.com/tasks/v1/lists/@default/tasks', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${gToken}`, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ title }),
+      });
+      if (r.status === 401) { gToken = null; updateGoogleUI(); }
+      if (!r.ok) throw new Error(`Tasks API ${r.status}`);
+      return r.json();
+    }
+
+    // ── UI helpers ────────────────────────────────────────────
+    function setStatus(msg, cls) { statusText.textContent = msg; statusText.className = cls; }
 
     function showLastCard(note) {
       rawTranscript.textContent = `"${note.transcript}"`;
-      structuredResult.innerHTML = buildStructuredHTML(note);
-      structuredResult.style.display = 'block';
+      structResult.innerHTML    = buildStructuredHTML(note);
+      structResult.style.display = 'block';
+      googleBadge.classList.remove('show', 'err');
       lastCard.style.display = 'block';
     }
 
     function buildStructuredHTML(note) {
       if (note.type === 'calendar') {
-        const c = note.calendar || {};
-        const dateStr = c.date ? fmtDate(c.date) : '';
-        const timeStr = c.time ? fmtTime(c.time) : '';
-        const when = [dateStr, timeStr].filter(Boolean).join(' · ');
-        return `
-          <div class="s-type-label cal">📅 Calendar event</div>
-          <div class="s-title">${esc(c.title || 'Untitled event')}</div>
+        const c    = note.calendar || {};
+        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
+        return `<div class="s-type-label cal">📅 Calendar event</div>
+          <div class="s-title">${esc(c.title || 'Untitled')}</div>
           <div class="s-detail">
             ${when ? `<span>${when}</span>` : ''}
             ${c.location ? `<span>📍 ${esc(c.location)}</span>` : ''}
             ${c.description && c.description !== c.title ? `<span>${esc(c.description)}</span>` : ''}
           </div>`;
-      } else {
-        const task = note.todo?.task || note.transcript;
-        return `
-          <div class="s-type-label todo">☐ To-do</div>
-          <div class="s-title">${esc(task)}</div>`;
       }
+      return `<div class="s-type-label todo">☐ To-do</div>
+        <div class="s-title">${esc(note.todo?.task || note.transcript)}</div>`;
     }
 
-    function flashSaved() {
-      savedBadge.classList.add('show');
-      setTimeout(() => savedBadge.classList.remove('show'), 2500);
+    function flashBadge(el) {
+      el.classList.add('show');
+      setTimeout(() => el.classList.remove('show'), 3000);
     }
     function showError(msg) {
       errorBanner.textContent = msg;
@@ -560,11 +679,9 @@ Return ONLY valid JSON, no extra text:
       try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
     }
     function deleteNote(id) {
-      const notes = loadNotes().filter(n => n.id !== id);
-      try { localStorage.setItem(NOTES_KEY, JSON.stringify(notes)); } catch {}
+      try { localStorage.setItem(NOTES_KEY, JSON.stringify(loadNotes().filter(n => n.id !== id))); } catch {}
       renderNotes();
     }
-
     function renderNotes() {
       const notes = loadNotes();
       emptyState.style.display = notes.length ? 'none' : 'block';
@@ -581,63 +698,51 @@ Return ONLY valid JSON, no extra text:
     function buildNoteCardHTML(n) {
       const ts = `<div class="note-timestamp">${fmtTimestamp(n.createdAt || n.date)}</div>`;
       if (n.type === 'calendar') {
-        const c = n.calendar || {};
-        const dateStr = c.date ? fmtDate(c.date) : '';
-        const timeStr = c.time ? fmtTime(c.time) : '';
-        const when = [dateStr, timeStr].filter(Boolean).join(' · ');
-        return `
-          <div class="note-icon">📅</div>
+        const c    = n.calendar || {};
+        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
+        return `<div class="note-icon">📅</div>
           <div class="note-body">
             <div class="note-type-label cal">Calendar</div>
             <div class="note-title">${esc(c.title || 'Untitled')}</div>
-            <div class="note-sub">
-              ${when ? when + '<br>' : ''}
-              ${c.location ? '📍 ' + esc(c.location) : ''}
-            </div>
-            ${ts}
-          </div>
-          <button type="button" class="note-del" aria-label="Delete">×</button>`;
-      } else if (n.type === 'todo') {
-        const task = n.todo?.task || n.transcript;
-        return `
-          <div class="note-icon">☐</div>
-          <div class="note-body">
-            <div class="note-type-label todo">To-do</div>
-            <div class="note-title">${esc(task)}</div>
-            ${ts}
-          </div>
-          <button type="button" class="note-del" aria-label="Delete">×</button>`;
-      } else {
-        // legacy plain-text note
-        return `
-          <div class="note-icon">🎙️</div>
-          <div class="note-body">
-            <div class="note-title">${esc(n.text || n.transcript || '')}</div>
+            <div class="note-sub">${when}${c.location ? (when ? '<br>' : '') + '📍 ' + esc(c.location) : ''}</div>
             ${ts}
           </div>
           <button type="button" class="note-del" aria-label="Delete">×</button>`;
       }
+      if (n.type === 'todo') {
+        return `<div class="note-icon">☐</div>
+          <div class="note-body">
+            <div class="note-type-label todo">To-do</div>
+            <div class="note-title">${esc(n.todo?.task || n.transcript)}</div>
+            ${ts}
+          </div>
+          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      }
+      return `<div class="note-icon">🎙️</div>
+        <div class="note-body">
+          <div class="note-title">${esc(n.text || n.transcript || '')}</div>${ts}
+        </div>
+        <button type="button" class="note-del" aria-label="Delete">×</button>`;
     }
 
-    // ── Date/time helpers ─────────────────────────────────────
-    function fmtDate(dateStr) {
-      if (!dateStr) return '';
-      const [y, m, d] = dateStr.split('-').map(Number);
-      return new Date(y, m - 1, d).toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' });
+    // ── Formatting ────────────────────────────────────────────
+    function fmtDate(s) {
+      if (!s) return '';
+      const [y,m,d] = s.split('-').map(Number);
+      return new Date(y, m-1, d).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
     }
-    function fmtTime(timeStr) {
-      if (!timeStr) return '';
-      const [h, m] = timeStr.split(':').map(Number);
-      const period = h >= 12 ? 'PM' : 'AM';
-      const h12 = h % 12 || 12;
-      return `${h12}:${String(m).padStart(2,'0')} ${period}`;
+    function fmtTime(s) {
+      if (!s) return '';
+      const [h,m] = s.split(':').map(Number);
+      return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
     }
     function fmtTimestamp(iso) {
       if (!iso) return '';
       const d = new Date(iso), now = new Date();
-      const t = d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
-      if (d.toDateString() === now.toDateString()) return `Today, ${t}`;
-      return d.toLocaleDateString([], { month: 'short', day: 'numeric' }) + `, ${t}`;
+      const t = d.toLocaleTimeString([], { hour:'numeric', minute:'2-digit' });
+      return d.toDateString() === now.toDateString()
+        ? `Today, ${t}`
+        : d.toLocaleDateString([], { month:'short', day:'numeric' }) + `, ${t}`;
     }
     function esc(s) {
       return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');

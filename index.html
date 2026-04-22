@@ -470,6 +470,14 @@
       if (!getKey()) $('onboarding').classList.add('show');
       try { updateGoogleUI(); } catch(e) {}
       try { renderNotes(); }    catch(e) {}
+
+      // Prime mic permission on startup so it doesn't interrupt recording later.
+      // iOS Safari asks once per session — better to get it out of the way on open.
+      if (navigator.mediaDevices?.getUserMedia) {
+        navigator.mediaDevices.getUserMedia({ audio: true })
+          .then(s => s.getTracks().forEach(t => t.stop()))
+          .catch(() => {}); // silently ignore if denied — handled at record time
+      }
     })();
 
     // ── Onboarding ────────────────────────────────────────────

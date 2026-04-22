@@ -693,16 +693,18 @@ Examples:
   "dentist Thursday at 2pm" → calendar (date + time)
   "dentist Thursday" → todo (date, no time)
   "add dentist to calendar for Thursday" → calendar all-day (explicit calendar mention)
-  "work on project tonight" → todo (no specific time)
-  "call mom tomorrow" → todo
+  "work on project tonight" → todo, due: null
+  "call mom by tomorrow" → todo, due: tomorrow
+  "call mom tomorrow" → todo, due: tomorrow (explicit day stated)
+  "call mom" → todo, due: null
 
-For todos, infer a due date from temporal language:
-  "tonight" / "today" → today's date
-  "tomorrow" → tomorrow
-  "this week" / "by Friday" → this Friday
-  "next week" → next Monday
-  "soon" / "ASAP" / "urgent" → today
-  no time reference → null
+For todos, only set a due date if the user explicitly states a deadline or specific day it must be done by.
+  "call mom by Friday" → due: this Friday
+  "finish report by end of next week" → due: next Friday
+  "dentist Thursday" → due: this Thursday
+  "call mom" → due: null (no deadline mentioned)
+  "work on project tonight" → due: null ("tonight" is a vague preference, not a deadline)
+  "remind me to do X" → due: null
 
 Return ONLY valid JSON (no markdown):
 {

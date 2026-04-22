@@ -52,16 +52,16 @@
     header {
       display: flex; align-items: center;
       justify-content: space-between;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
-    header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.4px; }
+    .header-left h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
+    .header-left p  { font-size: 13px; color: var(--secondary); margin-top: 1px; }
     #headerRight { display: flex; align-items: center; gap: 10px; }
     #connPill {
       display: none; align-items: center; gap: 5px;
       font-size: 12px; font-weight: 500;
-      color: var(--green);
-      background: rgba(52,199,89,.12);
-      border-radius: 20px; padding: 4px 9px;
+      color: var(--green); background: rgba(52,199,89,.12);
+      border-radius: 20px; padding: 4px 10px;
     }
     #connPill.show { display: flex; }
     #connPill::before {
@@ -69,81 +69,81 @@
       border-radius: 50%; background: var(--green); flex-shrink: 0;
     }
     #settingsBtn {
-      background: none; border: none;
-      font-size: 22px; cursor: pointer;
-      padding: 4px; opacity: 0.7;
+      background: var(--card); border: none; border-radius: 50%;
+      width: 36px; height: 36px; font-size: 17px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
-    }
-
-    /* ── Setup banner ── */
-    #setupBanner {
-      background: var(--card); border-radius: 12px;
-      padding: 16px; margin-bottom: 20px; display: none;
-    }
-    #setupBanner.show { display: block; }
-    #setupBanner h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
-    .setup-row {
-      display: flex; align-items: center; gap: 10px;
-      padding: 8px 0; border-bottom: 1px solid var(--border);
-      font-size: 14px;
-    }
-    .setup-row:last-child { border-bottom: none; }
-    .setup-check { font-size: 16px; flex-shrink: 0; width: 22px; text-align: center; }
-    .setup-label { flex: 1; color: var(--secondary); }
-    .setup-label.done { color: var(--label); }
-    .setup-action {
-      font-size: 13px; font-weight: 600; color: var(--accent);
-      cursor: pointer; background: none; border: none; padding: 4px 0;
-      -webkit-tap-highlight-color: transparent;
+      box-shadow: 0 1px 3px rgba(0,0,0,.08);
     }
 
     /* ── Error banner ── */
     #errorBanner {
       background: rgba(255,59,48,.1); border: 1px solid rgba(255,59,48,.25);
-      color: var(--danger); border-radius: 10px;
-      padding: 11px 14px; font-size: 14px; margin-bottom: 20px; display: none;
+      color: var(--danger); border-radius: 12px;
+      padding: 12px 14px; font-size: 14px; margin-bottom: 20px; display: none;
     }
     #errorBanner.show { display: block; }
 
     /* ── Record section ── */
     #recordSection {
       display: flex; flex-direction: column;
-      align-items: center; gap: 22px; margin-bottom: 36px;
+      align-items: center; gap: 20px; margin-bottom: 36px;
     }
-    #statusText { font-size: 16px; color: var(--secondary); min-height: 22px; }
-    #statusText.rec  { color: var(--danger); font-weight: 600; }
-    #statusText.proc { color: var(--accent); }
 
     #recordBtn {
-      width: 96px; height: 96px; border-radius: 50%; border: none;
-      background: var(--accent); color: #fff; font-size: 40px;
+      width: 100px; height: 100px; border-radius: 50%; border: none;
+      background: var(--accent); color: #fff; font-size: 42px;
       cursor: pointer; display: flex; align-items: center; justify-content: center;
-      box-shadow: 0 4px 20px rgba(0,122,255,.35);
+      box-shadow: 0 6px 24px rgba(0,122,255,.35);
       transition: transform .15s, background .2s, box-shadow .2s;
       -webkit-tap-highlight-color: transparent;
     }
     #recordBtn.recording {
-      background: var(--danger); box-shadow: 0 4px 20px rgba(255,59,48,.4);
-      animation: pulse 1.4s ease-in-out infinite;
+      background: var(--danger); box-shadow: 0 6px 24px rgba(255,59,48,.4);
     }
-    #recordBtn:disabled { opacity: 0.45; cursor: default; animation: none; }
-    #recordBtn:active:not(:disabled) { transform: scale(0.92); }
-    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
+    #recordBtn:disabled { opacity: 0.45; cursor: default; }
+    #recordBtn:active:not(:disabled) { transform: scale(0.93); }
+
+    /* waveform shown while recording */
+    #waveform {
+      display: none; gap: 4px; align-items: center; height: 36px;
+    }
+    #waveform.show { display: flex; }
+    #waveform span {
+      width: 4px; border-radius: 3px; background: var(--danger);
+      animation: wave 1s ease-in-out infinite;
+    }
+    #waveform span:nth-child(1){animation-delay:0s;height:10px}
+    #waveform span:nth-child(2){animation-delay:.1s;height:18px}
+    #waveform span:nth-child(3){animation-delay:.2s;height:26px}
+    #waveform span:nth-child(4){animation-delay:.3s;height:18px}
+    #waveform span:nth-child(5){animation-delay:.4s;height:10px}
+    #waveform span:nth-child(6){animation-delay:.15s;height:22px}
+    #waveform span:nth-child(7){animation-delay:.25s;height:14px}
+    @keyframes wave { 0%,100%{transform:scaleY(.4)} 50%{transform:scaleY(1)} }
+
+    #statusText {
+      font-size: 15px; color: var(--secondary); min-height: 20px;
+      font-weight: 500;
+    }
+    #statusText.rec  { color: var(--danger); }
+    #statusText.proc { color: var(--accent); }
 
     /* ── Last recording card ── */
     #lastCard {
       width: 100%; background: var(--card);
-      border-radius: 12px; padding: 14px 16px; display: none;
+      border-radius: 16px; padding: 16px; display: none;
+      box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .card-meta {
       display: flex; justify-content: space-between;
-      align-items: center; gap: 8px; margin-bottom: 8px;
+      align-items: center; gap: 8px; margin-bottom: 10px;
     }
-    .card-meta span:first-child { font-size: 12px; color: var(--secondary); flex-shrink: 0; }
+    .card-meta-label { font-size: 12px; color: var(--secondary); font-weight: 500; }
     .card-badges { display: flex; gap: 6px; align-items: center; }
     .badge {
       font-size: 11px; font-weight: 600;
-      padding: 2px 7px; border-radius: 20px;
+      padding: 3px 8px; border-radius: 20px;
       opacity: 0; transition: opacity .3s;
     }
     .badge.show   { opacity: 1; }
@@ -152,7 +152,7 @@
     .badge.err    { background: rgba(255,59,48,.12);  color: var(--danger); }
 
     #rawTranscript {
-      font-size: 14px; color: var(--secondary); line-height: 1.4; font-style: italic;
+      font-size: 14px; color: var(--secondary); line-height: 1.5; font-style: italic;
       margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
     #structuredResult { display: none; }
@@ -163,19 +163,24 @@
     .s-type-label.cal  { color: var(--accent); }
     .s-type-label.todo { color: var(--purple); }
     .s-title  { font-size: 16px; font-weight: 600; margin-bottom: 4px; }
-    .s-detail { font-size: 13px; color: var(--secondary); line-height: 1.5; }
+    .s-detail { font-size: 13px; color: var(--secondary); line-height: 1.6; }
     .s-detail span { display: block; }
 
     /* ── Notes list ── */
-    #notesSection h2 {
+    #notesSection { }
+    .section-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 12px; padding: 0 2px;
+    }
+    .section-header h2 {
       font-size: 12px; font-weight: 600; color: var(--secondary);
-      text-transform: uppercase; letter-spacing: .6px;
-      margin-bottom: 10px; padding-left: 4px;
+      text-transform: uppercase; letter-spacing: .7px;
     }
     #notesList { display: flex; flex-direction: column; gap: 8px; }
     .note-card {
-      background: var(--card); border-radius: 12px;
+      background: var(--card); border-radius: 14px;
       padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;
+      box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
     .note-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
     .note-body { flex: 1; min-width: 0; }
@@ -185,69 +190,120 @@
     }
     .note-type-label.cal  { color: var(--accent); }
     .note-type-label.todo { color: var(--purple); }
-    .note-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; }
+    .note-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; line-height: 1.3; }
     .note-sub   { font-size: 13px; color: var(--secondary); line-height: 1.4; }
-    .note-timestamp { font-size: 11px; color: var(--secondary); margin-top: 5px; }
+    .note-timestamp { font-size: 11px; color: var(--secondary); opacity: .7; margin-top: 5px; }
     .note-del {
       background: none; border: none; color: var(--secondary);
-      font-size: 20px; line-height: 1; cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent;
+      font-size: 22px; line-height: 1; cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
+      -webkit-tap-highlight-color: transparent; opacity: .5;
     }
-    .note-del:active { color: var(--danger); }
-    #emptyState { text-align: center; color: var(--secondary); padding: 32px 0; }
-    #emptyState .icon { font-size: 40px; display: block; margin-bottom: 10px; }
+    .note-del:active { color: var(--danger); opacity: 1; }
+    #emptyState { text-align: center; color: var(--secondary); padding: 40px 0; }
+    #emptyState .icon { font-size: 44px; display: block; margin-bottom: 12px; }
+    #emptyState p { font-size: 15px; }
+    #emptyState small { font-size: 13px; opacity: .6; margin-top: 6px; display: block; }
 
     /* ── Settings sheet ── */
     #overlay {
       display: none; pointer-events: none;
-      position: fixed; inset: 0; background: rgba(0,0,0,.45);
+      position: fixed; inset: 0; background: rgba(0,0,0,.5);
       z-index: 200; align-items: flex-end;
+      backdrop-filter: blur(2px); -webkit-backdrop-filter: blur(2px);
     }
     #overlay.open { display: flex; pointer-events: auto; }
     #sheet {
-      background: var(--card); border-radius: 18px 18px 0 0;
-      padding: 20px 20px calc(max(var(--sb), 16px) + 4px);
+      background: var(--card); border-radius: 22px 22px 0 0;
+      padding: 8px 20px calc(max(var(--sb), 20px) + 4px);
       width: 100%; max-width: 560px; margin: 0 auto;
     }
+    .sheet-handle {
+      width: 36px; height: 4px; border-radius: 2px;
+      background: var(--border); margin: 0 auto 16px;
+    }
     #sheet h2 {
-      font-size: 18px; font-weight: 600;
+      font-size: 17px; font-weight: 600;
       display: flex; justify-content: space-between; align-items: center;
       margin-bottom: 22px;
     }
     #closeBtn {
-      background: none; border: none; font-size: 20px;
-      color: var(--secondary); cursor: pointer;
+      background: rgba(120,120,128,.12); border: none;
+      border-radius: 50%; width: 28px; height: 28px;
+      font-size: 13px; font-weight: 600;
+      color: var(--secondary); cursor: pointer; display: flex;
+      align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
-    .setting-label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; }
+    .setting-label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; font-weight: 500; }
     .key-row { display: flex; gap: 8px; margin-bottom: 6px; }
     #apiKeyInput {
-      flex: 1; padding: 12px 14px; border-radius: 10px;
-      border: 1px solid var(--border); background: var(--bg); color: var(--label);
+      flex: 1; padding: 12px 14px; border-radius: 11px;
+      border: 1.5px solid var(--border); background: var(--bg); color: var(--label);
       font-size: 14px; font-family: 'Menlo','SF Mono',monospace; -webkit-appearance: none;
     }
     #apiKeyInput:focus { outline: none; border-color: var(--accent); }
     #apiKeyInput.saved { border-color: var(--green); }
     .setting-btn {
-      border: none; border-radius: 10px;
+      border: none; border-radius: 11px;
       padding: 12px 16px; font-size: 15px; font-weight: 600;
       cursor: pointer; transition: background .2s;
       -webkit-tap-highlight-color: transparent;
     }
     #saveKeyBtn { background: var(--accent); color: #fff; }
     #saveKeyBtn.saved { background: var(--green); }
-    .setting-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
+    .setting-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
     #googleBtn {
-      width: 100%; border: none; border-radius: 10px;
-      padding: 13px; font-size: 15px; font-weight: 600;
+      width: 100%; border: none; border-radius: 11px;
+      padding: 14px; font-size: 15px; font-weight: 600;
       cursor: pointer; background: var(--accent); color: #fff;
       transition: background .2s; margin-bottom: 8px;
       -webkit-tap-highlight-color: transparent;
     }
-    #googleBtn.connected { background: rgba(52,199,89,.15); color: var(--green); }
+    #googleBtn.connected { background: rgba(255,59,48,.08); color: var(--danger); }
     #googleStatus { font-size: 13px; color: var(--secondary); min-height: 18px; }
     #googleStatus.ok   { color: var(--green); }
     #googleStatus.warn { color: var(--orange); }
+
+    .privacy-link {
+      display: block; text-align: center; margin-top: 20px;
+      font-size: 12px; color: var(--secondary); text-decoration: none; opacity: .6;
+    }
+
+    /* ── Onboarding overlay ── */
+    #onboarding {
+      position: fixed; inset: 0; z-index: 400;
+      background: var(--bg); display: none; flex-direction: column;
+      padding: max(var(--st), 48px) 28px max(var(--sb), 32px);
+      align-items: center; justify-content: center;
+    }
+    #onboarding.show { display: flex; }
+    .ob-step { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 360px; }
+    .ob-step.active { display: flex; }
+    .ob-icon { font-size: 64px; margin-bottom: 20px; }
+    .ob-title { font-size: 26px; font-weight: 700; letter-spacing: -.4px; text-align: center; margin-bottom: 10px; }
+    .ob-sub { font-size: 15px; color: var(--secondary); text-align: center; line-height: 1.5; margin-bottom: 32px; }
+    .ob-input {
+      width: 100%; padding: 14px 16px; border-radius: 13px;
+      border: 1.5px solid var(--border); background: var(--card); color: var(--label);
+      font-size: 15px; font-family: 'Menlo','SF Mono',monospace; -webkit-appearance: none;
+      margin-bottom: 12px;
+    }
+    .ob-input:focus { outline: none; border-color: var(--accent); }
+    .ob-btn {
+      width: 100%; padding: 15px; border: none; border-radius: 13px;
+      font-size: 16px; font-weight: 600; cursor: pointer;
+      background: var(--accent); color: #fff;
+      -webkit-tap-highlight-color: transparent; margin-bottom: 10px;
+    }
+    .ob-btn.secondary {
+      background: rgba(0,122,255,.1); color: var(--accent);
+    }
+    .ob-btn.skip {
+      background: none; color: var(--secondary); font-size: 14px; padding: 10px;
+    }
+    .ob-hint { font-size: 12px; color: var(--secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
+    .ob-hint a { color: var(--accent); text-decoration: none; }
+    .ob-error { font-size: 13px; color: var(--danger); min-height: 18px; margin-bottom: 8px; }
 
     /* ── Toast ── */
     #toast {
@@ -256,7 +312,7 @@
       left: 50%; transform: translateX(-50%) translateY(20px);
       background: rgba(0,0,0,.82); color: #fff;
       font-size: 14px; font-weight: 500;
-      padding: 10px 18px; border-radius: 20px;
+      padding: 10px 18px; border-radius: 22px;
       white-space: nowrap; opacity: 0;
       transition: opacity .25s, transform .25s;
       z-index: 300; pointer-events: none;
@@ -266,36 +322,56 @@
 </head>
 <body>
 
+  <!-- ── Onboarding ── -->
+  <div id="onboarding">
+    <!-- Step 1: Welcome + API key -->
+    <div class="ob-step active" id="ob1">
+      <div class="ob-icon">🎙️</div>
+      <div class="ob-title">Voice Notes</div>
+      <div class="ob-sub">Record anything. Your notes are automatically organized into calendar events and to-dos.</div>
+      <input class="ob-input" id="obKeyInput" type="password"
+             placeholder="sk-proj-…" autocomplete="off" autocorrect="off" spellcheck="false" />
+      <div class="ob-hint">
+        Paste your <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API key</a> above.<br>
+        It's stored only on your device — never sent to our servers.
+      </div>
+      <div class="ob-error" id="obKeyError"></div>
+      <button type="button" class="ob-btn" id="obKeyContinue">Continue</button>
+    </div>
+
+    <!-- Step 2: Google -->
+    <div class="ob-step" id="ob2">
+      <div class="ob-icon">📅</div>
+      <div class="ob-title">Connect Google?</div>
+      <div class="ob-sub">Voice notes will automatically create calendar events and tasks in Google Calendar and Tasks.</div>
+      <button type="button" class="ob-btn" id="obGoogleBtn">Connect Google</button>
+      <button type="button" class="ob-btn skip" id="obSkipBtn">Skip for now</button>
+    </div>
+  </div>
+
+  <!-- ── Main app ── -->
   <header>
-    <h1>Voice Notes</h1>
+    <div class="header-left">
+      <h1>Voice Notes</h1>
+    </div>
     <div id="headerRight">
       <div id="connPill">Google</div>
       <button type="button" id="settingsBtn" aria-label="Settings">⚙️</button>
     </div>
   </header>
 
-  <div id="setupBanner">
-    <h3>Quick setup</h3>
-    <div class="setup-row">
-      <span class="setup-check" id="keyCheck">○</span>
-      <span class="setup-label" id="keyLabel">Add your OpenAI API key</span>
-      <button type="button" class="setup-action" id="setupKeyBtn">Add</button>
-    </div>
-    <div class="setup-row">
-      <span class="setup-check" id="gCheck">○</span>
-      <span class="setup-label" id="gLabel">Connect Google Calendar &amp; Tasks</span>
-      <button type="button" class="setup-action" id="setupGoogleBtn">Connect</button>
-    </div>
-  </div>
-
   <div id="errorBanner"></div>
 
   <div id="recordSection">
-    <p id="statusText">Tap to record</p>
     <button type="button" id="recordBtn" aria-label="Start recording">🎤</button>
+    <div id="waveform">
+      <span></span><span></span><span></span><span></span>
+      <span></span><span></span><span></span>
+    </div>
+    <p id="statusText">Tap to record</p>
     <div id="lastCard">
       <div class="card-meta">
-        <span>Last recording</span>
+        <span class="card-meta-label">Last recording</span>
         <div class="card-badges">
           <span class="badge saved"  id="savedBadge">✓ Saved</span>
           <span class="badge google" id="googleBadge"></span>
@@ -307,16 +383,21 @@
   </div>
 
   <section id="notesSection">
-    <h2>Notes</h2>
+    <div class="section-header">
+      <h2>Recent notes</h2>
+    </div>
     <div id="notesList"></div>
     <div id="emptyState">
       <span class="icon">🎙️</span>
-      Record your first voice note
+      <p>Record your first voice note</p>
+      <small>Tap the button above to start</small>
     </div>
   </section>
 
+  <!-- ── Settings sheet ── -->
   <div id="overlay">
     <div id="sheet">
+      <div class="sheet-handle"></div>
       <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
 
       <label class="setting-label" for="apiKeyInput">OpenAI API Key</label>
@@ -332,6 +413,8 @@
       <label class="setting-label">Google Calendar &amp; Tasks</label>
       <button type="button" id="googleBtn">Connect Google</button>
       <p id="googleStatus"></p>
+
+      <a href="privacy.html" class="privacy-link">Privacy Policy</a>
     </div>
   </div>
 
@@ -360,13 +443,12 @@
     const googleBtn     = $('googleBtn');
     const googleStatus  = $('googleStatus');
     const connPill      = $('connPill');
-    const setupBanner   = $('setupBanner');
+    const waveform      = $('waveform');
 
     let mediaRecorder = null;
     let audioChunks   = [];
     let recording     = false;
     let processing    = false;
-
     let gToken  = null;
     let gExpiry = 0;
 
@@ -376,25 +458,52 @@
       set:    (k,v) => { try { localStorage.setItem(k, v); }    catch {} },
       remove: k => { try { localStorage.removeItem(k); }        catch {} },
     };
-    const getKey      = () => store.get(APIKEY_KEY) || '';
+    const getKey        = () => store.get(APIKEY_KEY) || '';
     const isGoogleReady = () => !!gToken && Date.now() < gExpiry;
 
     // ── Init ──────────────────────────────────────────────────
     (async () => {
-      // Handle OAuth callback (?code= in URL after Google redirects back)
       const params = new URLSearchParams(window.location.search);
       const code   = params.get('code');
       if (code) {
         window.history.replaceState({}, '', window.location.pathname);
         await handleAuthCallback(code);
       } else if (store.get(GCONN_KEY)) {
-        // Previously connected — silently refresh token in background
         silentRefresh();
       }
 
-      try { updateSetupBanner(); } catch(e) {}
-      try { renderNotes(); }       catch(e) {}
+      // Show onboarding only if no API key yet
+      if (!getKey()) {
+        $('onboarding').classList.add('show');
+      }
+
+      try { updateGoogleUI(); }  catch(e) {}
+      try { renderNotes(); }     catch(e) {}
     })();
+
+    // ── Onboarding ────────────────────────────────────────────
+    $('obKeyContinue').addEventListener('click', () => {
+      const k = $('obKeyInput').value.trim();
+      if (!k.startsWith('sk-')) {
+        $('obKeyError').textContent = 'Enter a valid OpenAI key starting with sk-';
+        return;
+      }
+      store.set(APIKEY_KEY, k);
+      $('obKeyError').textContent = '';
+      // Move to step 2
+      $('ob1').classList.remove('active');
+      $('ob2').classList.add('active');
+    });
+
+    $('obGoogleBtn').addEventListener('click', () => {
+      $('onboarding').classList.remove('show');
+      connectGoogle();
+    });
+
+    $('obSkipBtn').addEventListener('click', () => {
+      $('onboarding').classList.remove('show');
+      showToast('You can connect Google anytime in Settings ⚙️');
+    });
 
     // ── OAuth ─────────────────────────────────────────────────
     function connectGoogle() {
@@ -405,7 +514,7 @@
       url.searchParams.set('response_type', 'code');
       url.searchParams.set('scope',         GSCOPES);
       url.searchParams.set('access_type',   'offline');
-      url.searchParams.set('prompt',        'consent'); // ensures refresh token is issued
+      url.searchParams.set('prompt',        'consent');
       window.location.href = url.toString();
     }
 
@@ -419,12 +528,10 @@
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error || 'Exchange failed');
-
         gToken  = data.access_token;
         gExpiry = Date.now() + (data.expires_in - 60) * 1000;
         store.set(GCONN_KEY, '1');
         updateGoogleUI();
-        updateSetupBanner();
         showToast('Google connected ✓');
       } catch (e) {
         showError('Google sign-in failed: ' + e.message);
@@ -435,18 +542,11 @@
       try {
         const resp = await fetch('/api/auth-refresh', { method: 'POST' });
         const data = await resp.json();
-        if (!resp.ok) {
-          // Refresh token gone — user needs to reconnect
-          store.remove(GCONN_KEY);
-          updateGoogleUI();
-          return;
-        }
+        if (!resp.ok) { store.remove(GCONN_KEY); updateGoogleUI(); return; }
         gToken  = data.access_token;
         gExpiry = Date.now() + (data.expires_in - 60) * 1000;
         updateGoogleUI();
-      } catch (e) {
-        console.error('Silent refresh error:', e);
-      }
+      } catch (e) { console.error('Silent refresh:', e); }
     }
 
     async function ensureGoogleToken() {
@@ -461,18 +561,17 @@
       gToken = null; gExpiry = 0;
       store.remove(GCONN_KEY);
       updateGoogleUI();
-      updateSetupBanner();
       showToast('Google disconnected');
     }
 
     function updateGoogleUI() {
-      const ok          = isGoogleReady();
-      const wasConnected = !!store.get(GCONN_KEY);
-      googleBtn.textContent = ok ? 'Disconnect Google' : wasConnected ? 'Reconnect Google' : 'Connect Google';
+      const ok         = isGoogleReady();
+      const wasConn    = !!store.get(GCONN_KEY);
+      googleBtn.textContent = ok ? 'Disconnect Google' : wasConn ? 'Reconnect Google' : 'Connect Google';
       googleBtn.classList.toggle('connected', ok);
-      googleStatus.textContent = ok ? '✓ Google Calendar & Tasks connected'
-        : wasConnected ? 'Reconnecting…' : '';
-      googleStatus.className = ok ? 'ok' : wasConnected ? 'warn' : '';
+      googleStatus.textContent = ok ? '✓ Calendar & Tasks connected'
+        : wasConn ? 'Session expired — tap to reconnect' : '';
+      googleStatus.className = ok ? 'ok' : wasConn ? 'warn' : '';
       connPill.classList.toggle('show', ok);
     }
 
@@ -511,24 +610,8 @@
       $('saveKeyBtn').textContent = 'Update';
       $('keyStatus').textContent  = '✓ API key saved';
       $('keyStatus').style.color  = 'var(--green)';
-      updateSetupBanner();
       showToast('API key saved');
     });
-
-    // ── Setup banner ──────────────────────────────────────────
-    function updateSetupBanner() {
-      const hasKey    = !!getKey();
-      const hasGoogle = !!store.get(GCONN_KEY);
-      setupBanner.classList.toggle('show', !(hasKey && hasGoogle));
-      $('keyCheck').textContent  = hasKey    ? '✓' : '○';
-      $('keyLabel').classList.toggle('done', hasKey);
-      $('gCheck').textContent    = hasGoogle ? '✓' : '○';
-      $('gLabel').classList.toggle('done', hasGoogle);
-      $('setupKeyBtn').style.display    = hasKey    ? 'none' : '';
-      $('setupGoogleBtn').style.display = hasGoogle ? 'none' : '';
-    }
-    $('setupKeyBtn').addEventListener('click', () => openSettings());
-    $('setupGoogleBtn').addEventListener('click', () => connectGoogle());
 
     // ── Recording ─────────────────────────────────────────────
     recordBtn.addEventListener('click', async () => {
@@ -558,6 +641,7 @@
       recording = true;
       recordBtn.classList.add('recording');
       recordBtn.textContent = '⏹';
+      waveform.classList.add('show');
       setStatus('Recording…', 'rec');
     }
 
@@ -566,6 +650,7 @@
       recording = false;
       recordBtn.classList.remove('recording');
       recordBtn.textContent = '🎤';
+      waveform.classList.remove('show');
     }
 
     // ── Pipeline ──────────────────────────────────────────────
@@ -597,15 +682,21 @@
           const ready = await ensureGoogleToken();
           if (ready) {
             try {
-              if (note.type === 'calendar') { await createCalendarEvent(note.calendar); googleBadge.textContent = '✓ Calendar'; }
-              else { await createGoogleTask(note.todo?.task || note.transcript); googleBadge.textContent = '✓ Tasks'; }
+              if (note.type === 'calendar') {
+                await createCalendarEvent(note.calendar);
+                googleBadge.textContent = '✓ Calendar';
+              } else {
+                await createGoogleTask(note.todo?.task || note.transcript);
+                googleBadge.textContent = '✓ Tasks';
+              }
               flashBadge(googleBadge);
             } catch (e) {
-              googleBadge.textContent = 'Sync failed'; googleBadge.classList.add('err'); flashBadge(googleBadge);
+              googleBadge.textContent = 'Sync failed';
+              googleBadge.classList.add('err');
+              flashBadge(googleBadge);
             }
           }
         }
-
       } catch (err) {
         showError(`Error: ${err.message}`);
       } finally {
@@ -692,7 +783,7 @@ Return ONLY valid JSON:
     function showError(msg){ errorBanner.textContent=msg; errorBanner.classList.add('show'); setTimeout(()=>errorBanner.classList.remove('show'),7000); }
     function hideError(){ errorBanner.classList.remove('show'); }
     let toastTimer;
-    function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
+    function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400); }
 
     // ── Notes storage ─────────────────────────────────────────
     function loadNotes(){ try{return JSON.parse(store.get(NOTES_KEY))||[];}catch{return[];} }

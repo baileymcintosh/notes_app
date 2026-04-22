@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Privacy Policy — Voice Notes</title>
+  <style>
+    :root {
+      --accent: #007AFF; --bg: #F2F2F7; --card: #FFFFFF;
+      --label: #000000; --secondary: #6C6C70;
+      --st: env(safe-area-inset-top, 0px); --sb: env(safe-area-inset-bottom, 0px);
+    }
+    @media (prefers-color-scheme: dark) {
+      :root { --bg: #000; --card: #1C1C1E; --label: #fff; --secondary: #8E8E93; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+      background: var(--bg); color: var(--label);
+      padding: max(var(--st), 20px) 20px max(var(--sb), 32px);
+      max-width: 640px; margin: 0 auto;
+      -webkit-font-smoothing: antialiased; line-height: 1.6;
+    }
+    .back { display: inline-flex; align-items: center; gap: 4px; color: var(--accent);
+      text-decoration: none; font-size: 15px; margin-bottom: 24px; }
+    h1 { font-size: 26px; font-weight: 700; letter-spacing: -.4px; margin-bottom: 6px; }
+    .updated { font-size: 13px; color: var(--secondary); margin-bottom: 28px; }
+    h2 { font-size: 17px; font-weight: 600; margin: 24px 0 8px; }
+    p { font-size: 15px; color: var(--secondary); margin-bottom: 12px; }
+    ul { padding-left: 20px; color: var(--secondary); font-size: 15px; }
+    li { margin-bottom: 6px; }
+    a { color: var(--accent); }
+  </style>
+</head>
+<body>
+  <a href="/" class="back">← Voice Notes</a>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: April 2026</p>
+
+  <h2>What we collect</h2>
+  <p>Voice Notes is designed to keep your data on your device. Here's exactly what happens:</p>
+  <ul>
+    <li><strong>Voice recordings</strong> are sent directly from your browser to OpenAI's Whisper API for transcription. They are not stored on our servers.</li>
+    <li><strong>Your OpenAI API key</strong> is stored only in your browser's local storage. It is never sent to our servers.</li>
+    <li><strong>Note content</strong> is stored only in your browser's local storage on your device.</li>
+    <li><strong>Google account access</strong> is obtained via OAuth 2.0. Your refresh token is stored in a secure HttpOnly cookie on our server (Netlify). We use it solely to create calendar events and tasks on your behalf. We do not read, store, or share your Google data.</li>
+  </ul>
+
+  <h2>Third-party services</h2>
+  <ul>
+    <li><strong>OpenAI</strong> — transcription (Whisper) and classification (GPT-4o-mini). See <a href="https://openai.com/policies/privacy-policy" target="_blank">OpenAI's Privacy Policy</a>.</li>
+    <li><strong>Google</strong> — Calendar and Tasks integration. See <a href="https://policies.google.com/privacy" target="_blank">Google's Privacy Policy</a>.</li>
+    <li><strong>Netlify</strong> — hosting and serverless functions. See <a href="https://www.netlify.com/privacy/" target="_blank">Netlify's Privacy Policy</a>.</li>
+  </ul>
+
+  <h2>Data retention</h2>
+  <p>We do not retain any user data on our servers beyond the Google refresh token cookie, which is deleted when you disconnect Google or it expires (400 days).</p>
+
+  <h2>Contact</h2>
+  <p>Questions? Reach out at <a href="mailto:bailey24000@gmail.com">bailey24000@gmail.com</a>.</p>
+</body>
+</html>

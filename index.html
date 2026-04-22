@@ -8,7 +8,6 @@
   <meta name="apple-mobile-web-app-title" content="Voice Notes" />
   <link rel="manifest" href="manifest.json" />
   <title>Voice Notes</title>
-  <script src="https://accounts.google.com/gsi/client" async></script>
   <style>
     :root {
       --accent:    #007AFF;
@@ -28,11 +27,11 @@
     }
     @media (prefers-color-scheme: dark) {
       :root {
-        --bg:     #000000;
-        --card:   #1C1C1E;
-        --label:  #FFFFFF;
+        --bg:        #000000;
+        --card:      #1C1C1E;
+        --label:     #FFFFFF;
         --secondary: #8E8E93;
-        --border: rgba(84,84,88,0.6);
+        --border:    rgba(84,84,88,0.6);
       }
     }
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -51,35 +50,24 @@
 
     /* ── Header ── */
     header {
-      display: flex;
-      align-items: center;
+      display: flex; align-items: center;
       justify-content: space-between;
       margin-bottom: 20px;
     }
     header h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.4px; }
     #headerRight { display: flex; align-items: center; gap: 10px; }
-
-    /* Connection pill in header */
     #connPill {
-      display: none;
-      align-items: center;
-      gap: 5px;
-      font-size: 12px;
-      font-weight: 500;
+      display: none; align-items: center; gap: 5px;
+      font-size: 12px; font-weight: 500;
       color: var(--green);
       background: rgba(52,199,89,.12);
-      border-radius: 20px;
-      padding: 4px 9px;
+      border-radius: 20px; padding: 4px 9px;
     }
     #connPill.show { display: flex; }
     #connPill::before {
-      content: '';
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--green);
-      flex-shrink: 0;
+      content: ''; width: 6px; height: 6px;
+      border-radius: 50%; background: var(--green); flex-shrink: 0;
     }
-
     #settingsBtn {
       background: none; border: none;
       font-size: 22px; cursor: pointer;
@@ -87,22 +75,16 @@
       -webkit-tap-highlight-color: transparent;
     }
 
-    /* ── Setup banner (first-time) ── */
+    /* ── Setup banner ── */
     #setupBanner {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 16px;
-      margin-bottom: 20px;
-      display: none;
+      background: var(--card); border-radius: 12px;
+      padding: 16px; margin-bottom: 20px; display: none;
     }
     #setupBanner.show { display: block; }
     #setupBanner h3 { font-size: 15px; font-weight: 600; margin-bottom: 12px; }
     .setup-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 0;
-      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: 10px;
+      padding: 8px 0; border-bottom: 1px solid var(--border);
       font-size: 14px;
     }
     .setup-row:last-child { border-bottom: none; }
@@ -110,82 +92,52 @@
     .setup-label { flex: 1; color: var(--secondary); }
     .setup-label.done { color: var(--label); }
     .setup-action {
-      font-size: 13px; font-weight: 600;
-      color: var(--accent); cursor: pointer;
-      background: none; border: none;
-      padding: 4px 0;
+      font-size: 13px; font-weight: 600; color: var(--accent);
+      cursor: pointer; background: none; border: none; padding: 4px 0;
       -webkit-tap-highlight-color: transparent;
     }
 
     /* ── Error banner ── */
     #errorBanner {
-      background: rgba(255,59,48,.1);
-      border: 1px solid rgba(255,59,48,.25);
-      color: var(--danger);
-      border-radius: 10px;
-      padding: 11px 14px;
-      font-size: 14px;
-      margin-bottom: 20px;
-      display: none;
+      background: rgba(255,59,48,.1); border: 1px solid rgba(255,59,48,.25);
+      color: var(--danger); border-radius: 10px;
+      padding: 11px 14px; font-size: 14px; margin-bottom: 20px; display: none;
     }
     #errorBanner.show { display: block; }
 
     /* ── Record section ── */
     #recordSection {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 22px;
-      margin-bottom: 36px;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 22px; margin-bottom: 36px;
     }
-    #statusText {
-      font-size: 16px;
-      color: var(--secondary);
-      min-height: 22px;
-      transition: color 0.2s;
-    }
+    #statusText { font-size: 16px; color: var(--secondary); min-height: 22px; }
     #statusText.rec  { color: var(--danger); font-weight: 600; }
     #statusText.proc { color: var(--accent); }
 
     #recordBtn {
-      width: 96px; height: 96px;
-      border-radius: 50%;
-      border: none;
-      background: var(--accent);
-      color: #fff;
-      font-size: 40px;
-      cursor: pointer;
-      display: flex; align-items: center; justify-content: center;
+      width: 96px; height: 96px; border-radius: 50%; border: none;
+      background: var(--accent); color: #fff; font-size: 40px;
+      cursor: pointer; display: flex; align-items: center; justify-content: center;
       box-shadow: 0 4px 20px rgba(0,122,255,.35);
       transition: transform .15s, background .2s, box-shadow .2s;
       -webkit-tap-highlight-color: transparent;
     }
     #recordBtn.recording {
-      background: var(--danger);
-      box-shadow: 0 4px 20px rgba(255,59,48,.4);
+      background: var(--danger); box-shadow: 0 4px 20px rgba(255,59,48,.4);
       animation: pulse 1.4s ease-in-out infinite;
     }
     #recordBtn:disabled { opacity: 0.45; cursor: default; animation: none; }
     #recordBtn:active:not(:disabled) { transform: scale(0.92); }
-    @keyframes pulse {
-      0%,100% { transform: scale(1); }
-      50%      { transform: scale(1.07); }
-    }
+    @keyframes pulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.07)} }
 
     /* ── Last recording card ── */
     #lastCard {
-      width: 100%;
-      background: var(--card);
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: none;
+      width: 100%; background: var(--card);
+      border-radius: 12px; padding: 14px 16px; display: none;
     }
     .card-meta {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      display: flex; justify-content: space-between;
+      align-items: center; gap: 8px; margin-bottom: 8px;
     }
     .card-meta span:first-child { font-size: 12px; color: var(--secondary); flex-shrink: 0; }
     .card-badges { display: flex; gap: 6px; align-items: center; }
@@ -194,22 +146,19 @@
       padding: 2px 7px; border-radius: 20px;
       opacity: 0; transition: opacity .3s;
     }
-    .badge.show  { opacity: 1; }
-    .badge.saved  { background: rgba(52,199,89,.15); color: var(--green); }
-    .badge.google { background: rgba(0,122,255,.12); color: var(--accent); }
-    .badge.err    { background: rgba(255,59,48,.12); color: var(--danger); }
+    .badge.show   { opacity: 1; }
+    .badge.saved  { background: rgba(52,199,89,.15);  color: var(--green); }
+    .badge.google { background: rgba(0,122,255,.12);  color: var(--accent); }
+    .badge.err    { background: rgba(255,59,48,.12);  color: var(--danger); }
 
     #rawTranscript {
-      font-size: 14px; color: var(--secondary);
-      line-height: 1.4; font-style: italic;
-      margin-bottom: 12px; padding-bottom: 12px;
-      border-bottom: 1px solid var(--border);
+      font-size: 14px; color: var(--secondary); line-height: 1.4; font-style: italic;
+      margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid var(--border);
     }
     #structuredResult { display: none; }
     .s-type-label {
       font-size: 11px; font-weight: 700;
-      letter-spacing: .6px; text-transform: uppercase;
-      margin-bottom: 6px;
+      letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px;
     }
     .s-type-label.cal  { color: var(--accent); }
     .s-type-label.todo { color: var(--purple); }
@@ -219,17 +168,14 @@
 
     /* ── Notes list ── */
     #notesSection h2 {
-      font-size: 12px; font-weight: 600;
-      color: var(--secondary);
+      font-size: 12px; font-weight: 600; color: var(--secondary);
       text-transform: uppercase; letter-spacing: .6px;
       margin-bottom: 10px; padding-left: 4px;
     }
     #notesList { display: flex; flex-direction: column; gap: 8px; }
     .note-card {
-      background: var(--card);
-      border-radius: 12px;
-      padding: 14px 16px;
-      display: flex; align-items: flex-start; gap: 12px;
+      background: var(--card); border-radius: 12px;
+      padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;
     }
     .note-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
     .note-body { flex: 1; min-width: 0; }
@@ -243,9 +189,8 @@
     .note-sub   { font-size: 13px; color: var(--secondary); line-height: 1.4; }
     .note-timestamp { font-size: 11px; color: var(--secondary); margin-top: 5px; }
     .note-del {
-      background: none; border: none;
-      color: var(--secondary); font-size: 20px; line-height: 1;
-      cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
+      background: none; border: none; color: var(--secondary);
+      font-size: 20px; line-height: 1; cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
       -webkit-tap-highlight-color: transparent;
     }
     .note-del:active { color: var(--danger); }
@@ -255,14 +200,12 @@
     /* ── Settings sheet ── */
     #overlay {
       display: none; pointer-events: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.45);
+      position: fixed; inset: 0; background: rgba(0,0,0,.45);
       z-index: 200; align-items: flex-end;
     }
     #overlay.open { display: flex; pointer-events: auto; }
     #sheet {
-      background: var(--card);
-      border-radius: 18px 18px 0 0;
+      background: var(--card); border-radius: 18px 18px 0 0;
       padding: 20px 20px calc(max(var(--sb), 16px) + 4px);
       width: 100%; max-width: 560px; margin: 0 auto;
     }
@@ -272,68 +215,51 @@
       margin-bottom: 22px;
     }
     #closeBtn {
-      background: none; border: none;
-      font-size: 20px; color: var(--secondary); cursor: pointer;
+      background: none; border: none; font-size: 20px;
+      color: var(--secondary); cursor: pointer;
       -webkit-tap-highlight-color: transparent;
     }
     .setting-label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; }
-
     .key-row { display: flex; gap: 8px; margin-bottom: 6px; }
     #apiKeyInput {
-      flex: 1; padding: 12px 14px;
-      border-radius: 10px; border: 1px solid var(--border);
-      background: var(--bg); color: var(--label);
-      font-size: 14px; font-family: 'Menlo','SF Mono',monospace;
-      -webkit-appearance: none;
+      flex: 1; padding: 12px 14px; border-radius: 10px;
+      border: 1px solid var(--border); background: var(--bg); color: var(--label);
+      font-size: 14px; font-family: 'Menlo','SF Mono',monospace; -webkit-appearance: none;
     }
     #apiKeyInput:focus { outline: none; border-color: var(--accent); }
     #apiKeyInput.saved { border-color: var(--green); }
-
     .setting-btn {
       border: none; border-radius: 10px;
       padding: 12px 16px; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: background .2s, opacity .15s;
+      cursor: pointer; transition: background .2s;
       -webkit-tap-highlight-color: transparent;
     }
     #saveKeyBtn { background: var(--accent); color: #fff; }
     #saveKeyBtn.saved { background: var(--green); }
-
     .setting-divider { border: none; border-top: 1px solid var(--border); margin: 18px 0; }
-
-    #googleRow {
-      display: flex; align-items: center;
-      gap: 10px; margin-bottom: 8px;
-    }
     #googleBtn {
-      flex: 1; background: var(--accent); color: #fff;
-      border: none; border-radius: 10px;
-      padding: 12px; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: background .2s;
+      width: 100%; border: none; border-radius: 10px;
+      padding: 13px; font-size: 15px; font-weight: 600;
+      cursor: pointer; background: var(--accent); color: #fff;
+      transition: background .2s; margin-bottom: 8px;
       -webkit-tap-highlight-color: transparent;
     }
     #googleBtn.connected { background: rgba(52,199,89,.15); color: var(--green); }
-
-    #googleStatus {
-      font-size: 13px; min-height: 18px; color: var(--secondary);
-    }
-    #googleStatus.ok { color: var(--green); }
+    #googleStatus { font-size: 13px; color: var(--secondary); min-height: 18px; }
+    #googleStatus.ok   { color: var(--green); }
     #googleStatus.warn { color: var(--orange); }
 
-    /* Toast */
+    /* ── Toast ── */
     #toast {
       position: fixed;
       bottom: calc(max(var(--sb), 20px) + 16px);
       left: 50%; transform: translateX(-50%) translateY(20px);
-      background: rgba(0,0,0,.82);
-      color: #fff;
+      background: rgba(0,0,0,.82); color: #fff;
       font-size: 14px; font-weight: 500;
-      padding: 10px 18px;
-      border-radius: 20px;
-      white-space: nowrap;
-      opacity: 0;
+      padding: 10px 18px; border-radius: 20px;
+      white-space: nowrap; opacity: 0;
       transition: opacity .25s, transform .25s;
-      z-index: 300;
-      pointer-events: none;
+      z-index: 300; pointer-events: none;
     }
     #toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
   </style>
@@ -348,7 +274,6 @@
     </div>
   </header>
 
-  <!-- First-time setup card -->
   <div id="setupBanner">
     <h3>Quick setup</h3>
     <div class="setup-row">
@@ -390,7 +315,6 @@
     </div>
   </section>
 
-  <!-- Settings sheet -->
   <div id="overlay">
     <div id="sheet">
       <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
@@ -406,9 +330,7 @@
       <hr class="setting-divider" />
 
       <label class="setting-label">Google Calendar &amp; Tasks</label>
-      <div id="googleRow">
-        <button type="button" id="googleBtn">Connect Google</button>
-      </div>
+      <button type="button" id="googleBtn">Connect Google</button>
       <p id="googleStatus"></p>
     </div>
   </div>
@@ -445,53 +367,125 @@
     let recording     = false;
     let processing    = false;
 
-    let tokenClient   = null;
-    let gToken        = null;
-    let gExpiry       = 0;
-    // Pending resolve for when token arrives mid-flow
-    let gTokenResolve = null;
+    let gToken  = null;
+    let gExpiry = 0;
 
-    // ── Init ──────────────────────────────────────────────────
-    try { updateSetupBanner(); } catch(e) { console.error(e); }
-    try { renderNotes(); }       catch(e) { console.error(e); }
-    try { maybeSilentGoogleAuth(); } catch(e) {}
-
-    // ── Storage helpers ───────────────────────────────────────
+    // ── Storage ───────────────────────────────────────────────
     const store = {
       get:    k => { try { return localStorage.getItem(k); }    catch { return null; } },
       set:    (k,v) => { try { localStorage.setItem(k, v); }    catch {} },
       remove: k => { try { localStorage.removeItem(k); }        catch {} },
     };
-    const getKey = () => store.get(APIKEY_KEY) || '';
+    const getKey      = () => store.get(APIKEY_KEY) || '';
+    const isGoogleReady = () => !!gToken && Date.now() < gExpiry;
 
-    // ── Setup banner ──────────────────────────────────────────
-    function updateSetupBanner() {
-      const hasKey    = !!getKey();
-      const hasGoogle = !!store.get(GCONN_KEY);
-      const allDone   = hasKey && hasGoogle;
+    // ── Init ──────────────────────────────────────────────────
+    (async () => {
+      // Handle OAuth callback (?code= in URL after Google redirects back)
+      const params = new URLSearchParams(window.location.search);
+      const code   = params.get('code');
+      if (code) {
+        window.history.replaceState({}, '', window.location.pathname);
+        await handleAuthCallback(code);
+      } else if (store.get(GCONN_KEY)) {
+        // Previously connected — silently refresh token in background
+        silentRefresh();
+      }
 
-      setupBanner.classList.toggle('show', !allDone);
+      try { updateSetupBanner(); } catch(e) {}
+      try { renderNotes(); }       catch(e) {}
+    })();
 
-      $('keyCheck').textContent  = hasKey    ? '✓' : '○';
-      $('keyLabel').classList.toggle('done', hasKey);
-      $('gCheck').textContent    = hasGoogle ? '✓' : '○';
-      $('gLabel').classList.toggle('done', hasGoogle);
-      $('setupKeyBtn').style.display    = hasKey    ? 'none' : '';
-      $('setupGoogleBtn').style.display = hasGoogle ? 'none' : '';
+    // ── OAuth ─────────────────────────────────────────────────
+    function connectGoogle() {
+      const redirectUri = window.location.origin + '/';
+      const url = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+      url.searchParams.set('client_id',     CLIENT_ID);
+      url.searchParams.set('redirect_uri',  redirectUri);
+      url.searchParams.set('response_type', 'code');
+      url.searchParams.set('scope',         GSCOPES);
+      url.searchParams.set('access_type',   'offline');
+      url.searchParams.set('prompt',        'consent'); // ensures refresh token is issued
+      window.location.href = url.toString();
     }
 
-    $('setupKeyBtn').addEventListener('click', () => openSettings('key'));
-    $('setupGoogleBtn').addEventListener('click', () => {
-      if (isGoogleReady()) return;
-      connectGoogle();
+    async function handleAuthCallback(code) {
+      const redirectUri = window.location.origin + '/';
+      try {
+        const resp = await fetch('/api/auth-exchange', {
+          method:  'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body:    JSON.stringify({ code, redirect_uri: redirectUri }),
+        });
+        const data = await resp.json();
+        if (!resp.ok) throw new Error(data.error || 'Exchange failed');
+
+        gToken  = data.access_token;
+        gExpiry = Date.now() + (data.expires_in - 60) * 1000;
+        store.set(GCONN_KEY, '1');
+        updateGoogleUI();
+        updateSetupBanner();
+        showToast('Google connected ✓');
+      } catch (e) {
+        showError('Google sign-in failed: ' + e.message);
+      }
+    }
+
+    async function silentRefresh() {
+      try {
+        const resp = await fetch('/api/auth-refresh', { method: 'POST' });
+        const data = await resp.json();
+        if (!resp.ok) {
+          // Refresh token gone — user needs to reconnect
+          store.remove(GCONN_KEY);
+          updateGoogleUI();
+          return;
+        }
+        gToken  = data.access_token;
+        gExpiry = Date.now() + (data.expires_in - 60) * 1000;
+        updateGoogleUI();
+      } catch (e) {
+        console.error('Silent refresh error:', e);
+      }
+    }
+
+    async function ensureGoogleToken() {
+      if (isGoogleReady()) return true;
+      if (!store.get(GCONN_KEY)) return false;
+      await silentRefresh();
+      return isGoogleReady();
+    }
+
+    async function disconnectGoogle() {
+      try { await fetch('/api/auth-revoke', { method: 'POST' }); } catch {}
+      gToken = null; gExpiry = 0;
+      store.remove(GCONN_KEY);
+      updateGoogleUI();
+      updateSetupBanner();
+      showToast('Google disconnected');
+    }
+
+    function updateGoogleUI() {
+      const ok          = isGoogleReady();
+      const wasConnected = !!store.get(GCONN_KEY);
+      googleBtn.textContent = ok ? 'Disconnect Google' : wasConnected ? 'Reconnect Google' : 'Connect Google';
+      googleBtn.classList.toggle('connected', ok);
+      googleStatus.textContent = ok ? '✓ Google Calendar & Tasks connected'
+        : wasConnected ? 'Reconnecting…' : '';
+      googleStatus.className = ok ? 'ok' : wasConnected ? 'warn' : '';
+      connPill.classList.toggle('show', ok);
+    }
+
+    googleBtn.addEventListener('click', () => {
+      isGoogleReady() ? disconnectGoogle() : connectGoogle();
     });
 
     // ── Settings ──────────────────────────────────────────────
-    $('settingsBtn').addEventListener('click', () => openSettings());
+    $('settingsBtn').addEventListener('click', openSettings);
     $('closeBtn').addEventListener('click', closeSettings);
     overlay.addEventListener('click', e => { if (e.target === overlay) closeSettings(); });
 
-    function openSettings(focus) {
+    function openSettings() {
       const key = getKey();
       apiKeyInput.value = key ? '••••••••' : '';
       apiKeyInput.classList.toggle('saved', !!key);
@@ -501,15 +495,12 @@
       $('keyStatus').style.color  = 'var(--green)';
       updateGoogleUI();
       overlay.classList.add('open');
-      if (focus === 'key') setTimeout(() => { apiKeyInput.value = ''; apiKeyInput.focus(); }, 80);
     }
     function closeSettings() { overlay.classList.remove('open'); }
 
-    // Clear placeholder on focus so user can type new key
     apiKeyInput.addEventListener('focus', () => {
       if (apiKeyInput.value === '••••••••') apiKeyInput.value = '';
     });
-
     $('saveKeyBtn').addEventListener('click', () => {
       const k = apiKeyInput.value.trim();
       if (!k || k === '••••••••') return;
@@ -524,87 +515,20 @@
       showToast('API key saved');
     });
 
-    // ── Google OAuth ──────────────────────────────────────────
-    const isGoogleReady = () => !!gToken && Date.now() < gExpiry;
-
-    function buildTokenClient() {
-      if (!window.google?.accounts?.oauth2) return false;
-      if (tokenClient) return true;
-      tokenClient = google.accounts.oauth2.initTokenClient({
-        client_id: CLIENT_ID,
-        scope: GSCOPES,
-        callback: resp => {
-          if (resp.error) {
-            showError('Google sign-in failed: ' + resp.error);
-            updateGoogleUI();
-            if (gTokenResolve) { gTokenResolve(false); gTokenResolve = null; }
-            return;
-          }
-          gToken  = resp.access_token;
-          gExpiry = Date.now() + (resp.expires_in - 60) * 1000;
-          store.set(GCONN_KEY, '1');
-          updateGoogleUI();
-          updateSetupBanner();
-          if (gTokenResolve) { gTokenResolve(true); gTokenResolve = null; }
-        },
-      });
-      return true;
+    // ── Setup banner ──────────────────────────────────────────
+    function updateSetupBanner() {
+      const hasKey    = !!getKey();
+      const hasGoogle = !!store.get(GCONN_KEY);
+      setupBanner.classList.toggle('show', !(hasKey && hasGoogle));
+      $('keyCheck').textContent  = hasKey    ? '✓' : '○';
+      $('keyLabel').classList.toggle('done', hasKey);
+      $('gCheck').textContent    = hasGoogle ? '✓' : '○';
+      $('gLabel').classList.toggle('done', hasGoogle);
+      $('setupKeyBtn').style.display    = hasKey    ? 'none' : '';
+      $('setupGoogleBtn').style.display = hasGoogle ? 'none' : '';
     }
-
-    function connectGoogle() {
-      if (!buildTokenClient()) {
-        showError('Google library still loading — try again in a moment.');
-        return;
-      }
-      tokenClient.requestAccessToken({ prompt: 'consent' });
-    }
-
-    function disconnectGoogle() {
-      if (gToken) try { google.accounts.oauth2.revoke(gToken, () => {}); } catch {}
-      gToken = null; gExpiry = 0;
-      store.remove(GCONN_KEY);
-      updateGoogleUI();
-      updateSetupBanner();
-      showToast('Google disconnected');
-    }
-
-    // Returns a promise that resolves true/false once a token arrives
-    function requestGoogleToken(silent) {
-      return new Promise(resolve => {
-        if (isGoogleReady()) { resolve(true); return; }
-        if (!buildTokenClient()) { resolve(false); return; }
-        gTokenResolve = resolve;
-        tokenClient.requestAccessToken({ prompt: silent ? '' : 'consent' });
-        // Timeout safety
-        setTimeout(() => { if (gTokenResolve) { gTokenResolve(false); gTokenResolve = null; } }, 30000);
-      });
-    }
-
-    function maybeSilentGoogleAuth() {
-      if (!store.get(GCONN_KEY)) return;
-      const tryIt = () => {
-        if (!window.google?.accounts?.oauth2) { setTimeout(tryIt, 700); return; }
-        buildTokenClient();
-        tokenClient.requestAccessToken({ prompt: '' });
-      };
-      setTimeout(tryIt, 800);
-    }
-
-    function updateGoogleUI() {
-      const ok = isGoogleReady();
-      const wasConnected = !!store.get(GCONN_KEY);
-      googleBtn.textContent = ok ? 'Disconnect Google' : (wasConnected ? 'Reconnect Google' : 'Connect Google');
-      googleBtn.classList.toggle('connected', ok);
-      googleStatus.textContent = ok
-        ? '✓ Google Calendar & Tasks connected'
-        : wasConnected ? 'Session expired — tap Reconnect' : '';
-      googleStatus.className = ok ? 'ok' : wasConnected ? 'warn' : '';
-      connPill.classList.toggle('show', ok);
-    }
-
-    googleBtn.addEventListener('click', () => {
-      isGoogleReady() ? disconnectGoogle() : connectGoogle();
-    });
+    $('setupKeyBtn').addEventListener('click', () => openSettings());
+    $('setupGoogleBtn').addEventListener('click', () => connectGoogle());
 
     // ── Recording ─────────────────────────────────────────────
     recordBtn.addEventListener('click', async () => {
@@ -618,7 +542,7 @@
       try {
         stream = await navigator.mediaDevices.getUserMedia({ audio: true });
       } catch {
-        showError('Microphone access denied — please allow it in Settings → Safari.');
+        showError('Microphone access denied — allow it in Settings → Safari.');
         return;
       }
       const mime = ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg']
@@ -647,85 +571,53 @@
     // ── Pipeline ──────────────────────────────────────────────
     async function processRecording(blob, mime) {
       const apiKey = getKey();
-      if (!apiKey) {
-        showError('No API key — tap ⚙️ to add it.');
-        setStatus('Tap to record', '');
-        return;
-      }
-      processing = true;
-      recordBtn.disabled = true;
+      if (!apiKey) { showError('No API key — tap ⚙️ to add it.'); setStatus('Tap to record',''); return; }
+      processing = true; recordBtn.disabled = true;
 
       try {
-        // 1. Whisper
         setStatus('Transcribing…', 'proc');
         const ext  = mime.includes('mp4') ? 'm4a' : mime.includes('webm') ? 'webm' : 'ogg';
         const form = new FormData();
         form.append('model', 'whisper-1');
-        form.append('file', blob, `audio.${ext}`);
+        form.append('file',  blob, `audio.${ext}`);
         const r1 = await fetch('https://api.openai.com/v1/audio/transcriptions', {
-          method: 'POST',
-          headers: { Authorization: `Bearer ${apiKey}` },
-          body: form,
+          method: 'POST', headers: { Authorization: `Bearer ${apiKey}` }, body: form,
         });
         if (!r1.ok) throw new Error(`Whisper ${r1.status}`);
         const transcript = ((await r1.json()).text || '').trim();
         if (!transcript) { showError('No speech detected — try again.'); return; }
 
-        // 2. Classify
         setStatus('Classifying…', 'proc');
         const structured = await classifyNote(transcript, apiKey);
         const note = { id: Date.now(), createdAt: new Date().toISOString(), transcript, ...structured };
-        addNote(note);
-        renderNotes();
-        showLastCard(note);
-        flashBadge(savedBadge);
+        addNote(note); renderNotes(); showLastCard(note); flashBadge(savedBadge);
 
-        // 3. Push to Google (silently refresh token if needed)
-        const googleConnected = !!store.get(GCONN_KEY);
-        if (googleConnected) {
+        if (store.get(GCONN_KEY)) {
           setStatus('Saving to Google…', 'proc');
-          let ready = isGoogleReady();
-          if (!ready) ready = await requestGoogleToken(true); // silent refresh
+          const ready = await ensureGoogleToken();
           if (ready) {
             try {
-              if (note.type === 'calendar') {
-                await createCalendarEvent(note.calendar);
-                googleBadge.textContent = '✓ Calendar';
-              } else {
-                await createGoogleTask(note.todo?.task || note.transcript);
-                googleBadge.textContent = '✓ Tasks';
-              }
+              if (note.type === 'calendar') { await createCalendarEvent(note.calendar); googleBadge.textContent = '✓ Calendar'; }
+              else { await createGoogleTask(note.todo?.task || note.transcript); googleBadge.textContent = '✓ Tasks'; }
               flashBadge(googleBadge);
             } catch (e) {
-              googleBadge.textContent = 'Sync failed';
-              googleBadge.classList.add('err');
-              flashBadge(googleBadge);
+              googleBadge.textContent = 'Sync failed'; googleBadge.classList.add('err'); flashBadge(googleBadge);
             }
-          } else {
-            googleBadge.textContent = 'Reconnect Google';
-            googleBadge.classList.add('err');
-            flashBadge(googleBadge);
-            updateGoogleUI();
           }
         }
 
       } catch (err) {
         showError(`Error: ${err.message}`);
       } finally {
-        processing = false;
-        recordBtn.disabled = false;
-        setStatus('Tap to record', '');
+        processing = false; recordBtn.disabled = false; setStatus('Tap to record', '');
       }
     }
 
     // ── GPT classify ──────────────────────────────────────────
     async function classifyNote(transcript, apiKey) {
-      const now  = new Date();
-      const day  = now.toLocaleDateString('en-US', { weekday: 'long' });
-      const date = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
-      const system = `You are a productivity assistant. Today is ${day}, ${date}.
-Classify the voice note as "calendar" (event with specific date/time) or "todo" (task, no fixed time).
-If a specific date or time is mentioned → calendar. Otherwise → todo. Ambiguous → todo.
+      const now    = new Date();
+      const system = `You are a productivity assistant. Today is ${now.toLocaleDateString('en-US',{weekday:'long'})}, ${now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}.
+Classify the voice note as "calendar" (specific date/time mentioned) or "todo" (task, no fixed time). Ambiguous → todo.
 Return ONLY valid JSON:
 {"type":"calendar"|"todo","calendar":{"title":"short title","date":"YYYY-MM-DD or null","time":"HH:MM 24h or null","description":"details or null","location":"location or null"},"todo":{"task":"clear actionable task"}}`;
       const r = await fetch('https://api.openai.com/v1/chat/completions', {
@@ -734,175 +626,107 @@ Return ONLY valid JSON:
         body: JSON.stringify({
           model: 'gpt-4o-mini', temperature: 0,
           response_format: { type: 'json_object' },
-          messages: [{ role: 'system', content: system }, { role: 'user', content: transcript }],
+          messages: [{ role:'system', content:system },{ role:'user', content:transcript }],
         }),
       });
       if (!r.ok) throw new Error(`GPT ${r.status}`);
       return JSON.parse((await r.json()).choices[0].message.content);
     }
 
-    // ── Google Calendar ───────────────────────────────────────
+    // ── Google APIs ───────────────────────────────────────────
     async function createCalendarEvent(cal) {
       const tz = Intl.DateTimeFormat().resolvedOptions().timeZone;
       let start, end;
       if (cal.date && cal.time) {
-        const [h, m] = cal.time.split(':').map(Number);
-        const endH   = String((h + 1) % 24).padStart(2, '0');
-        start = { dateTime: `${cal.date}T${cal.time}:00`, timeZone: tz };
-        end   = { dateTime: `${cal.date}T${endH}:${String(m).padStart(2,'0')}:00`, timeZone: tz };
+        const [h,m] = cal.time.split(':').map(Number);
+        const endH  = String((h+1)%24).padStart(2,'0');
+        start = { dateTime:`${cal.date}T${cal.time}:00`, timeZone:tz };
+        end   = { dateTime:`${cal.date}T${endH}:${String(m).padStart(2,'0')}:00`, timeZone:tz };
       } else {
         const d    = cal.date || new Date().toISOString().split('T')[0];
-        const next = new Date(d + 'T00:00:00');
-        next.setDate(next.getDate() + 1);
-        start = { date: d };
-        end   = { date: next.toISOString().split('T')[0] };
+        const next = new Date(d+'T00:00:00'); next.setDate(next.getDate()+1);
+        start = { date:d }; end = { date:next.toISOString().split('T')[0] };
       }
-      const event = {
-        summary: cal.title || 'Untitled event', start, end,
-        ...(cal.description && { description: cal.description }),
-        ...(cal.location    && { location: cal.location }),
-      };
       const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${gToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify(event),
+        method:'POST',
+        headers:{ Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
+        body: JSON.stringify({ summary:cal.title||'Untitled event', start, end,
+          ...(cal.description&&{description:cal.description}),
+          ...(cal.location&&{location:cal.location}) }),
       });
-      if (r.status === 401) { gToken = null; updateGoogleUI(); }
+      if (r.status===401){gToken=null;updateGoogleUI();}
       if (!r.ok) throw new Error(`Calendar ${r.status}`);
     }
 
-    // ── Google Tasks ──────────────────────────────────────────
     async function createGoogleTask(title) {
       const r = await fetch('https://tasks.googleapis.com/tasks/v1/lists/@default/tasks', {
-        method: 'POST',
-        headers: { Authorization: `Bearer ${gToken}`, 'Content-Type': 'application/json' },
+        method:'POST',
+        headers:{ Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
         body: JSON.stringify({ title }),
       });
-      if (r.status === 401) { gToken = null; updateGoogleUI(); }
+      if (r.status===401){gToken=null;updateGoogleUI();}
       if (!r.ok) throw new Error(`Tasks ${r.status}`);
     }
 
-    // ── UI ────────────────────────────────────────────────────
-    function setStatus(msg, cls) { statusText.textContent = msg; statusText.className = cls; }
-
-    function showLastCard(note) {
-      rawTranscript.textContent  = `"${note.transcript}"`;
-      structResult.innerHTML     = buildStructuredHTML(note);
-      structResult.style.display = 'block';
-      googleBadge.classList.remove('show', 'err');
-      lastCard.style.display = 'block';
+    // ── UI helpers ────────────────────────────────────────────
+    function setStatus(msg,cls){ statusText.textContent=msg; statusText.className=cls; }
+    function showLastCard(note){
+      rawTranscript.textContent = `"${note.transcript}"`;
+      structResult.innerHTML    = buildStructuredHTML(note);
+      structResult.style.display='block';
+      googleBadge.classList.remove('show','err');
+      lastCard.style.display='block';
     }
-
-    function buildStructuredHTML(note) {
-      if (note.type === 'calendar') {
-        const c    = note.calendar || {};
-        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
+    function buildStructuredHTML(note){
+      if(note.type==='calendar'){
+        const c=note.calendar||{};
+        const when=[c.date?fmtDate(c.date):'',c.time?fmtTime(c.time):''].filter(Boolean).join(' · ');
         return `<div class="s-type-label cal">📅 Calendar event</div>
-          <div class="s-title">${esc(c.title || 'Untitled')}</div>
-          <div class="s-detail">
-            ${when ? `<span>${when}</span>` : ''}
-            ${c.location ? `<span>📍 ${esc(c.location)}</span>` : ''}
-            ${c.description && c.description !== c.title ? `<span>${esc(c.description)}</span>` : ''}
-          </div>`;
+          <div class="s-title">${esc(c.title||'Untitled')}</div>
+          <div class="s-detail">${when?`<span>${when}</span>`:''}${c.location?`<span>📍 ${esc(c.location)}</span>`:''}${c.description&&c.description!==c.title?`<span>${esc(c.description)}</span>`:''}</div>`;
       }
       return `<div class="s-type-label todo">☐ To-do</div>
-        <div class="s-title">${esc(note.todo?.task || note.transcript)}</div>`;
+        <div class="s-title">${esc(note.todo?.task||note.transcript)}</div>`;
     }
-
-    function flashBadge(el) {
-      el.classList.add('show');
-      setTimeout(() => el.classList.remove('show'), 3500);
-    }
-    function showError(msg) {
-      errorBanner.textContent = msg;
-      errorBanner.classList.add('show');
-      setTimeout(() => errorBanner.classList.remove('show'), 7000);
-    }
-    function hideError() { errorBanner.classList.remove('show'); }
-
+    function flashBadge(el){ el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),3500); }
+    function showError(msg){ errorBanner.textContent=msg; errorBanner.classList.add('show'); setTimeout(()=>errorBanner.classList.remove('show'),7000); }
+    function hideError(){ errorBanner.classList.remove('show'); }
     let toastTimer;
-    function showToast(msg) {
-      const t = $('toast');
-      t.textContent = msg;
-      t.classList.add('show');
-      clearTimeout(toastTimer);
-      toastTimer = setTimeout(() => t.classList.remove('show'), 2200);
-    }
+    function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2200); }
 
     // ── Notes storage ─────────────────────────────────────────
-    function loadNotes() {
-      try { return JSON.parse(store.get(NOTES_KEY)) || []; } catch { return []; }
-    }
-    function addNote(note) {
-      const notes = loadNotes();
-      notes.unshift(note);
-      store.set(NOTES_KEY, JSON.stringify(notes));
-    }
-    function deleteNote(id) {
-      store.set(NOTES_KEY, JSON.stringify(loadNotes().filter(n => n.id !== id)));
-      renderNotes();
-    }
-    function renderNotes() {
-      const notes = loadNotes();
-      emptyState.style.display = notes.length ? 'none' : 'block';
-      notesList.innerHTML = '';
-      for (const n of notes) {
-        const div = document.createElement('div');
-        div.className = 'note-card';
-        div.innerHTML = buildNoteCardHTML(n);
-        div.querySelector('.note-del').addEventListener('click', () => deleteNote(n.id));
+    function loadNotes(){ try{return JSON.parse(store.get(NOTES_KEY))||[];}catch{return[];} }
+    function addNote(note){ const n=loadNotes(); n.unshift(note); store.set(NOTES_KEY,JSON.stringify(n)); }
+    function deleteNote(id){ store.set(NOTES_KEY,JSON.stringify(loadNotes().filter(n=>n.id!==id))); renderNotes(); }
+    function renderNotes(){
+      const notes=loadNotes();
+      emptyState.style.display=notes.length?'none':'block';
+      notesList.innerHTML='';
+      for(const n of notes){
+        const div=document.createElement('div'); div.className='note-card';
+        div.innerHTML=buildNoteCardHTML(n);
+        div.querySelector('.note-del').addEventListener('click',()=>deleteNote(n.id));
         notesList.appendChild(div);
       }
     }
-
-    function buildNoteCardHTML(n) {
-      const ts = `<div class="note-timestamp">${fmtTimestamp(n.createdAt || n.date)}</div>`;
-      if (n.type === 'calendar') {
-        const c    = n.calendar || {};
-        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
-        return `<div class="note-icon">📅</div>
-          <div class="note-body">
-            <div class="note-type-label cal">Calendar</div>
-            <div class="note-title">${esc(c.title || 'Untitled')}</div>
-            <div class="note-sub">${when}${c.location ? (when?'<br>':'')+'📍 '+esc(c.location):''}</div>${ts}
-          </div>
-          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+    function buildNoteCardHTML(n){
+      const ts=`<div class="note-timestamp">${fmtTimestamp(n.createdAt||n.date)}</div>`;
+      if(n.type==='calendar'){
+        const c=n.calendar||{};
+        const when=[c.date?fmtDate(c.date):'',c.time?fmtTime(c.time):''].filter(Boolean).join(' · ');
+        return `<div class="note-icon">📅</div><div class="note-body"><div class="note-type-label cal">Calendar</div><div class="note-title">${esc(c.title||'Untitled')}</div><div class="note-sub">${when}${c.location?(when?'<br>':'')+'📍 '+esc(c.location):''}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
       }
-      if (n.type === 'todo') {
-        return `<div class="note-icon">☐</div>
-          <div class="note-body">
-            <div class="note-type-label todo">To-do</div>
-            <div class="note-title">${esc(n.todo?.task || n.transcript)}</div>${ts}
-          </div>
-          <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      if(n.type==='todo'){
+        return `<div class="note-icon">☐</div><div class="note-body"><div class="note-type-label todo">To-do</div><div class="note-title">${esc(n.todo?.task||n.transcript)}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
       }
-      return `<div class="note-icon">🎙️</div>
-        <div class="note-body"><div class="note-title">${esc(n.text||n.transcript||'')}</div>${ts}</div>
-        <button type="button" class="note-del" aria-label="Delete">×</button>`;
+      return `<div class="note-icon">🎙️</div><div class="note-body"><div class="note-title">${esc(n.text||n.transcript||'')}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
     }
 
     // ── Formatting ────────────────────────────────────────────
-    function fmtDate(s) {
-      if (!s) return '';
-      const [y,m,d] = s.split('-').map(Number);
-      return new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'});
-    }
-    function fmtTime(s) {
-      if (!s) return '';
-      const [h,m] = s.split(':').map(Number);
-      return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`;
-    }
-    function fmtTimestamp(iso) {
-      if (!iso) return '';
-      const d = new Date(iso), now = new Date();
-      const t = d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'});
-      return d.toDateString()===now.toDateString()
-        ? `Today, ${t}`
-        : d.toLocaleDateString([],{month:'short',day:'numeric'})+`, ${t}`;
-    }
-    function esc(s) {
-      return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-    }
+    function fmtDate(s){ if(!s)return''; const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+    function fmtTime(s){ if(!s)return''; const[h,m]=s.split(':').map(Number); return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`; }
+    function fmtTimestamp(iso){ if(!iso)return''; const d=new Date(iso),now=new Date(); const t=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}); return d.toDateString()===now.toDateString()?`Today, ${t}`:d.toLocaleDateString([],{month:'short',day:'numeric'})+`, ${t}`; }
+    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   </script>
 </body>
 </html>

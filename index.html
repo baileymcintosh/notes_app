@@ -38,8 +38,7 @@
     button { touch-action: manipulation; }
     body {
       font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
-      background: var(--bg);
-      color: var(--label);
+      background: var(--bg); color: var(--label);
       min-height: 100dvh;
       padding-top:    max(var(--st), 16px);
       padding-bottom: max(var(--sb), 24px);
@@ -51,11 +50,9 @@
     /* ── Header ── */
     header {
       display: flex; align-items: center;
-      justify-content: space-between;
-      margin-bottom: 24px;
+      justify-content: space-between; margin-bottom: 24px;
     }
     .header-left h1 { font-size: 28px; font-weight: 700; letter-spacing: -0.5px; }
-    .header-left p  { font-size: 13px; color: var(--secondary); margin-top: 1px; }
     #headerRight { display: flex; align-items: center; gap: 10px; }
     #connPill {
       display: none; align-items: center; gap: 5px;
@@ -89,7 +86,6 @@
       display: flex; flex-direction: column;
       align-items: center; gap: 20px; margin-bottom: 36px;
     }
-
     #recordBtn {
       width: 100px; height: 100px; border-radius: 50%; border: none;
       background: var(--accent); color: #fff; font-size: 42px;
@@ -104,10 +100,7 @@
     #recordBtn:disabled { opacity: 0.45; cursor: default; }
     #recordBtn:active:not(:disabled) { transform: scale(0.93); }
 
-    /* waveform shown while recording */
-    #waveform {
-      display: none; gap: 4px; align-items: center; height: 36px;
-    }
+    #waveform { display: none; gap: 4px; align-items: center; height: 36px; }
     #waveform.show { display: flex; }
     #waveform span {
       width: 4px; border-radius: 3px; background: var(--danger);
@@ -122,18 +115,14 @@
     #waveform span:nth-child(7){animation-delay:.25s;height:14px}
     @keyframes wave { 0%,100%{transform:scaleY(.4)} 50%{transform:scaleY(1)} }
 
-    #statusText {
-      font-size: 15px; color: var(--secondary); min-height: 20px;
-      font-weight: 500;
-    }
+    #statusText { font-size: 15px; color: var(--secondary); min-height: 20px; font-weight: 500; }
     #statusText.rec  { color: var(--danger); }
     #statusText.proc { color: var(--accent); }
 
     /* ── Last recording card ── */
     #lastCard {
-      width: 100%; background: var(--card);
-      border-radius: 16px; padding: 16px; display: none;
-      box-shadow: 0 1px 4px rgba(0,0,0,.06);
+      width: 100%; background: var(--card); border-radius: 16px;
+      padding: 16px; display: none; box-shadow: 0 1px 4px rgba(0,0,0,.06);
     }
     .card-meta {
       display: flex; justify-content: space-between;
@@ -142,8 +131,7 @@
     .card-meta-label { font-size: 12px; color: var(--secondary); font-weight: 500; }
     .card-badges { display: flex; gap: 6px; align-items: center; }
     .badge {
-      font-size: 11px; font-weight: 600;
-      padding: 3px 8px; border-radius: 20px;
+      font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 20px;
       opacity: 0; transition: opacity .3s;
     }
     .badge.show   { opacity: 1; }
@@ -157,8 +145,8 @@
     }
     #structuredResult { display: none; }
     .s-type-label {
-      font-size: 11px; font-weight: 700;
-      letter-spacing: .6px; text-transform: uppercase; margin-bottom: 6px;
+      font-size: 11px; font-weight: 700; letter-spacing: .6px;
+      text-transform: uppercase; margin-bottom: 6px;
     }
     .s-type-label.cal  { color: var(--accent); }
     .s-type-label.todo { color: var(--purple); }
@@ -167,7 +155,6 @@
     .s-detail span { display: block; }
 
     /* ── Notes list ── */
-    #notesSection { }
     .section-header {
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 12px; padding: 0 2px;
@@ -182,23 +169,50 @@
       padding: 14px 16px; display: flex; align-items: flex-start; gap: 12px;
       box-shadow: 0 1px 3px rgba(0,0,0,.05);
     }
-    .note-icon { font-size: 20px; flex-shrink: 0; margin-top: 1px; }
+    .note-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
     .note-body { flex: 1; min-width: 0; }
     .note-type-label {
-      font-size: 10px; font-weight: 700;
-      letter-spacing: .5px; text-transform: uppercase; margin-bottom: 3px;
+      font-size: 10px; font-weight: 700; letter-spacing: .5px;
+      text-transform: uppercase; margin-bottom: 3px;
     }
     .note-type-label.cal  { color: var(--accent); }
     .note-type-label.todo { color: var(--purple); }
     .note-title { font-size: 15px; font-weight: 500; margin-bottom: 2px; line-height: 1.3; }
     .note-sub   { font-size: 13px; color: var(--secondary); line-height: 1.4; }
     .note-timestamp { font-size: 11px; color: var(--secondary); opacity: .7; margin-top: 5px; }
-    .note-del {
-      background: none; border: none; color: var(--secondary);
-      font-size: 22px; line-height: 1; cursor: pointer; padding: 0 0 0 6px; flex-shrink: 0;
-      -webkit-tap-highlight-color: transparent; opacity: .5;
+
+    /* edit inline input */
+    .note-edit-input {
+      width: 100%; padding: 6px 8px; border-radius: 8px;
+      border: 1.5px solid var(--accent); background: var(--bg); color: var(--label);
+      font-size: 15px; font-weight: 500; font-family: inherit;
+      -webkit-appearance: none; margin-bottom: 6px;
     }
-    .note-del:active { color: var(--danger); opacity: 1; }
+    .note-edit-input:focus { outline: none; }
+    .note-edit-actions { display: flex; gap: 6px; }
+    .note-edit-save {
+      font-size: 12px; font-weight: 600; color: #fff;
+      background: var(--accent); border: none; border-radius: 7px;
+      padding: 5px 12px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+    .note-edit-cancel {
+      font-size: 12px; font-weight: 600; color: var(--secondary);
+      background: none; border: none; border-radius: 7px;
+      padding: 5px 8px; cursor: pointer;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    .note-actions { display: flex; flex-direction: column; gap: 4px; flex-shrink: 0; }
+    .note-del, .note-edit-btn {
+      background: none; border: none; color: var(--secondary);
+      font-size: 18px; line-height: 1; cursor: pointer; padding: 2px;
+      -webkit-tap-highlight-color: transparent; opacity: .5;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .note-del:active   { color: var(--danger);  opacity: 1; }
+    .note-edit-btn:active { color: var(--accent); opacity: 1; }
+
     #emptyState { text-align: center; color: var(--secondary); padding: 40px 0; }
     #emptyState .icon { font-size: 44px; display: block; margin-bottom: 12px; }
     #emptyState p { font-size: 15px; }
@@ -227,11 +241,10 @@
       margin-bottom: 22px;
     }
     #closeBtn {
-      background: rgba(120,120,128,.12); border: none;
-      border-radius: 50%; width: 28px; height: 28px;
-      font-size: 13px; font-weight: 600;
-      color: var(--secondary); cursor: pointer; display: flex;
-      align-items: center; justify-content: center;
+      background: rgba(120,120,128,.12); border: none; border-radius: 50%;
+      width: 28px; height: 28px; font-size: 13px; font-weight: 600;
+      color: var(--secondary); cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       -webkit-tap-highlight-color: transparent;
     }
     .setting-label { font-size: 13px; color: var(--secondary); display: block; margin-bottom: 8px; font-weight: 500; }
@@ -244,10 +257,9 @@
     #apiKeyInput:focus { outline: none; border-color: var(--accent); }
     #apiKeyInput.saved { border-color: var(--green); }
     .setting-btn {
-      border: none; border-radius: 11px;
-      padding: 12px 16px; font-size: 15px; font-weight: 600;
-      cursor: pointer; transition: background .2s;
-      -webkit-tap-highlight-color: transparent;
+      border: none; border-radius: 11px; padding: 12px 16px;
+      font-size: 15px; font-weight: 600; cursor: pointer;
+      transition: background .2s; -webkit-tap-highlight-color: transparent;
     }
     #saveKeyBtn { background: var(--accent); color: #fff; }
     #saveKeyBtn.saved { background: var(--green); }
@@ -263,25 +275,24 @@
     #googleStatus { font-size: 13px; color: var(--secondary); min-height: 18px; }
     #googleStatus.ok   { color: var(--green); }
     #googleStatus.warn { color: var(--orange); }
-
     .privacy-link {
       display: block; text-align: center; margin-top: 20px;
       font-size: 12px; color: var(--secondary); text-decoration: none; opacity: .6;
     }
 
-    /* ── Onboarding overlay ── */
+    /* ── Onboarding ── */
     #onboarding {
-      position: fixed; inset: 0; z-index: 400;
-      background: var(--bg); display: none; flex-direction: column;
+      position: fixed; inset: 0; z-index: 400; background: var(--bg);
+      display: none; flex-direction: column;
       padding: max(var(--st), 48px) 28px max(var(--sb), 32px);
       align-items: center; justify-content: center;
     }
     #onboarding.show { display: flex; }
     .ob-step { display: none; flex-direction: column; align-items: center; width: 100%; max-width: 360px; }
     .ob-step.active { display: flex; }
-    .ob-icon { font-size: 64px; margin-bottom: 20px; }
+    .ob-icon  { font-size: 64px; margin-bottom: 20px; }
     .ob-title { font-size: 26px; font-weight: 700; letter-spacing: -.4px; text-align: center; margin-bottom: 10px; }
-    .ob-sub { font-size: 15px; color: var(--secondary); text-align: center; line-height: 1.5; margin-bottom: 32px; }
+    .ob-sub   { font-size: 15px; color: var(--secondary); text-align: center; line-height: 1.5; margin-bottom: 32px; }
     .ob-input {
       width: 100%; padding: 14px 16px; border-radius: 13px;
       border: 1.5px solid var(--border); background: var(--card); color: var(--label);
@@ -295,12 +306,7 @@
       background: var(--accent); color: #fff;
       -webkit-tap-highlight-color: transparent; margin-bottom: 10px;
     }
-    .ob-btn.secondary {
-      background: rgba(0,122,255,.1); color: var(--accent);
-    }
-    .ob-btn.skip {
-      background: none; color: var(--secondary); font-size: 14px; padding: 10px;
-    }
+    .ob-btn.skip { background: none; color: var(--secondary); font-size: 14px; padding: 10px; }
     .ob-hint { font-size: 12px; color: var(--secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
     .ob-hint a { color: var(--accent); text-decoration: none; }
     .ob-error { font-size: 13px; color: var(--danger); min-height: 18px; margin-bottom: 8px; }
@@ -324,7 +330,6 @@
 
   <!-- ── Onboarding ── -->
   <div id="onboarding">
-    <!-- Step 1: Welcome + API key -->
     <div class="ob-step active" id="ob1">
       <div class="ob-icon">🎙️</div>
       <div class="ob-title">Voice Notes</div>
@@ -333,13 +338,11 @@
              placeholder="sk-proj-…" autocomplete="off" autocorrect="off" spellcheck="false" />
       <div class="ob-hint">
         Paste your <a href="https://platform.openai.com/api-keys" target="_blank">OpenAI API key</a> above.<br>
-        It's stored only on your device — never sent to our servers.
+        Stored only on your device — never sent to our servers.
       </div>
       <div class="ob-error" id="obKeyError"></div>
       <button type="button" class="ob-btn" id="obKeyContinue">Continue</button>
     </div>
-
-    <!-- Step 2: Google -->
     <div class="ob-step" id="ob2">
       <div class="ob-icon">📅</div>
       <div class="ob-title">Connect Google?</div>
@@ -351,9 +354,7 @@
 
   <!-- ── Main app ── -->
   <header>
-    <div class="header-left">
-      <h1>Voice Notes</h1>
-    </div>
+    <div class="header-left"><h1>Voice Notes</h1></div>
     <div id="headerRight">
       <div id="connPill">Google</div>
       <button type="button" id="settingsBtn" aria-label="Settings">⚙️</button>
@@ -383,9 +384,7 @@
   </div>
 
   <section id="notesSection">
-    <div class="section-header">
-      <h2>Recent notes</h2>
-    </div>
+    <div class="section-header"><h2>Recent notes</h2></div>
     <div id="notesList"></div>
     <div id="emptyState">
       <span class="icon">🎙️</span>
@@ -399,7 +398,6 @@
     <div id="sheet">
       <div class="sheet-handle"></div>
       <h2>Settings <button type="button" id="closeBtn" aria-label="Close">✕</button></h2>
-
       <label class="setting-label" for="apiKeyInput">OpenAI API Key</label>
       <div class="key-row">
         <input id="apiKeyInput" type="password" placeholder="sk-proj-…"
@@ -407,13 +405,10 @@
         <button type="button" id="saveKeyBtn" class="setting-btn">Save</button>
       </div>
       <p id="keyStatus" style="font-size:13px;color:var(--secondary);min-height:18px;margin-bottom:4px;"></p>
-
       <hr class="setting-divider" />
-
       <label class="setting-label">Google Calendar &amp; Tasks</label>
       <button type="button" id="googleBtn">Connect Google</button>
       <p id="googleStatus"></p>
-
       <a href="privacy.html" class="privacy-link">Privacy Policy</a>
     </div>
   </div>
@@ -460,6 +455,7 @@
     };
     const getKey        = () => store.get(APIKEY_KEY) || '';
     const isGoogleReady = () => !!gToken && Date.now() < gExpiry;
+    const capFirst      = s => s ? s.charAt(0).toUpperCase() + s.slice(1) : s;
 
     // ── Init ──────────────────────────────────────────────────
     (async () => {
@@ -471,39 +467,22 @@
       } else if (store.get(GCONN_KEY)) {
         silentRefresh();
       }
-
-      // Show onboarding only if no API key yet
-      if (!getKey()) {
-        $('onboarding').classList.add('show');
-      }
-
-      try { updateGoogleUI(); }  catch(e) {}
-      try { renderNotes(); }     catch(e) {}
+      if (!getKey()) $('onboarding').classList.add('show');
+      try { updateGoogleUI(); } catch(e) {}
+      try { renderNotes(); }    catch(e) {}
     })();
 
     // ── Onboarding ────────────────────────────────────────────
     $('obKeyContinue').addEventListener('click', () => {
       const k = $('obKeyInput').value.trim();
-      if (!k.startsWith('sk-')) {
-        $('obKeyError').textContent = 'Enter a valid OpenAI key starting with sk-';
-        return;
-      }
+      if (!k.startsWith('sk-')) { $('obKeyError').textContent = 'Enter a valid key starting with sk-'; return; }
       store.set(APIKEY_KEY, k);
       $('obKeyError').textContent = '';
-      // Move to step 2
       $('ob1').classList.remove('active');
       $('ob2').classList.add('active');
     });
-
-    $('obGoogleBtn').addEventListener('click', () => {
-      $('onboarding').classList.remove('show');
-      connectGoogle();
-    });
-
-    $('obSkipBtn').addEventListener('click', () => {
-      $('onboarding').classList.remove('show');
-      showToast('You can connect Google anytime in Settings ⚙️');
-    });
+    $('obGoogleBtn').addEventListener('click', () => { $('onboarding').classList.remove('show'); connectGoogle(); });
+    $('obSkipBtn').addEventListener('click',   () => { $('onboarding').classList.remove('show'); showToast('Connect Google anytime in Settings ⚙️'); });
 
     // ── OAuth ─────────────────────────────────────────────────
     function connectGoogle() {
@@ -519,12 +498,10 @@
     }
 
     async function handleAuthCallback(code) {
-      const redirectUri = window.location.origin + '/';
       try {
         const resp = await fetch('/api/auth-exchange', {
-          method:  'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body:    JSON.stringify({ code, redirect_uri: redirectUri }),
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ code, redirect_uri: window.location.origin + '/' }),
         });
         const data = await resp.json();
         if (!resp.ok) throw new Error(data.error || 'Exchange failed');
@@ -533,9 +510,7 @@
         store.set(GCONN_KEY, '1');
         updateGoogleUI();
         showToast('Google connected ✓');
-      } catch (e) {
-        showError('Google sign-in failed: ' + e.message);
-      }
+      } catch (e) { showError('Google sign-in failed: ' + e.message); }
     }
 
     async function silentRefresh() {
@@ -546,7 +521,7 @@
         gToken  = data.access_token;
         gExpiry = Date.now() + (data.expires_in - 60) * 1000;
         updateGoogleUI();
-      } catch (e) { console.error('Silent refresh:', e); }
+      } catch(e) { console.error('Silent refresh:', e); }
     }
 
     async function ensureGoogleToken() {
@@ -565,8 +540,8 @@
     }
 
     function updateGoogleUI() {
-      const ok         = isGoogleReady();
-      const wasConn    = !!store.get(GCONN_KEY);
+      const ok      = isGoogleReady();
+      const wasConn = !!store.get(GCONN_KEY);
       googleBtn.textContent = ok ? 'Disconnect Google' : wasConn ? 'Reconnect Google' : 'Connect Google';
       googleBtn.classList.toggle('connected', ok);
       googleStatus.textContent = ok ? '✓ Calendar & Tasks connected'
@@ -575,9 +550,7 @@
       connPill.classList.toggle('show', ok);
     }
 
-    googleBtn.addEventListener('click', () => {
-      isGoogleReady() ? disconnectGoogle() : connectGoogle();
-    });
+    googleBtn.addEventListener('click', () => { isGoogleReady() ? disconnectGoogle() : connectGoogle(); });
 
     // ── Settings ──────────────────────────────────────────────
     $('settingsBtn').addEventListener('click', openSettings);
@@ -597,9 +570,7 @@
     }
     function closeSettings() { overlay.classList.remove('open'); }
 
-    apiKeyInput.addEventListener('focus', () => {
-      if (apiKeyInput.value === '••••••••') apiKeyInput.value = '';
-    });
+    apiKeyInput.addEventListener('focus', () => { if (apiKeyInput.value === '••••••••') apiKeyInput.value = ''; });
     $('saveKeyBtn').addEventListener('click', () => {
       const k = apiKeyInput.value.trim();
       if (!k || k === '••••••••') return;
@@ -622,12 +593,8 @@
     async function startRecording() {
       hideError();
       let stream;
-      try {
-        stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-      } catch {
-        showError('Microphone access denied — allow it in Settings → Safari.');
-        return;
-      }
+      try { stream = await navigator.mediaDevices.getUserMedia({ audio: true }); }
+      catch { showError('Microphone access denied — allow it in Settings → Safari.'); return; }
       const mime = ['audio/mp4','audio/webm;codecs=opus','audio/webm','audio/ogg']
         .find(t => MediaRecorder.isTypeSupported(t)) || '';
       mediaRecorder = new MediaRecorder(stream, mime ? { mimeType: mime } : {});
@@ -674,6 +641,11 @@
 
         setStatus('Classifying…', 'proc');
         const structured = await classifyNote(transcript, apiKey);
+
+        // Apply capitalization
+        if (structured.calendar?.title) structured.calendar.title = capFirst(structured.calendar.title);
+        if (structured.todo?.task)      structured.todo.task       = capFirst(structured.todo.task);
+
         const note = { id: Date.now(), createdAt: new Date().toISOString(), transcript, ...structured };
         addNote(note); renderNotes(); showLastCard(note); flashBadge(savedBadge);
 
@@ -682,22 +654,25 @@
           const ready = await ensureGoogleToken();
           if (ready) {
             try {
+              let googleId;
               if (note.type === 'calendar') {
-                await createCalendarEvent(note.calendar);
+                googleId = await createCalendarEvent(note.calendar);
                 googleBadge.textContent = '✓ Calendar';
               } else {
-                await createGoogleTask(note.todo?.task || note.transcript);
+                googleId = await createGoogleTask(note.todo);
                 googleBadge.textContent = '✓ Tasks';
               }
+              // Store Google ID so edits can sync back
+              updateNoteField(note.id, { googleId });
               flashBadge(googleBadge);
-            } catch (e) {
+            } catch(e) {
               googleBadge.textContent = 'Sync failed';
               googleBadge.classList.add('err');
               flashBadge(googleBadge);
             }
           }
         }
-      } catch (err) {
+      } catch(err) {
         showError(`Error: ${err.message}`);
       } finally {
         processing = false; recordBtn.disabled = false; setStatus('Tap to record', '');
@@ -706,18 +681,52 @@
 
     // ── GPT classify ──────────────────────────────────────────
     async function classifyNote(transcript, apiKey) {
-      const now    = new Date();
-      const system = `You are a productivity assistant. Today is ${now.toLocaleDateString('en-US',{weekday:'long'})}, ${now.toLocaleDateString('en-US',{year:'numeric',month:'long',day:'numeric'})}.
-Classify the voice note as "calendar" (specific date/time mentioned) or "todo" (task, no fixed time). Ambiguous → todo.
-Return ONLY valid JSON:
-{"type":"calendar"|"todo","calendar":{"title":"short title","date":"YYYY-MM-DD or null","time":"HH:MM 24h or null","description":"details or null","location":"location or null"},"todo":{"task":"clear actionable task"}}`;
+      const now = new Date();
+      const todayStr = now.toLocaleDateString('en-US', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
+      const system = `You are a productivity assistant. Today is ${todayStr}.
+
+CLASSIFICATION RULES — be strict:
+- "calendar": ONLY if BOTH a specific date AND a specific time are mentioned (e.g. "meeting Tuesday at 3pm"), OR the user explicitly says "add to calendar" / "put on my calendar" / "calendar event" (in which case it may be all-day).
+- "todo": everything else, including vague time references like "tonight", "this week", "soon", "tomorrow" with no clock time.
+
+Examples:
+  "dentist Thursday at 2pm" → calendar (date + time)
+  "dentist Thursday" → todo (date, no time)
+  "add dentist to calendar for Thursday" → calendar all-day (explicit calendar mention)
+  "work on project tonight" → todo (no specific time)
+  "call mom tomorrow" → todo
+
+For todos, infer a due date from temporal language:
+  "tonight" / "today" → today's date
+  "tomorrow" → tomorrow
+  "this week" / "by Friday" → this Friday
+  "next week" → next Monday
+  "soon" / "ASAP" / "urgent" → today
+  no time reference → null
+
+Return ONLY valid JSON (no markdown):
+{
+  "type": "calendar" | "todo",
+  "calendar": {
+    "title": "Short title, first letter capitalized",
+    "date": "YYYY-MM-DD or null",
+    "time": "HH:MM 24h or null",
+    "description": "details or null",
+    "location": "location or null"
+  },
+  "todo": {
+    "task": "Clear actionable task, first letter capitalized",
+    "due": "YYYY-MM-DD or null",
+    "notes": "Plain-English timing context, e.g. Tonight, By end of week, No deadline"
+  }
+}`;
       const r = await fetch('https://api.openai.com/v1/chat/completions', {
         method: 'POST',
         headers: { Authorization: `Bearer ${apiKey}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: 'gpt-4o-mini', temperature: 0,
           response_format: { type: 'json_object' },
-          messages: [{ role:'system', content:system },{ role:'user', content:transcript }],
+          messages: [{ role:'system', content:system }, { role:'user', content:transcript }],
         }),
       });
       if (!r.ok) throw new Error(`GPT ${r.status}`);
@@ -739,85 +748,193 @@ Return ONLY valid JSON:
         start = { date:d }; end = { date:next.toISOString().split('T')[0] };
       }
       const r = await fetch('https://www.googleapis.com/calendar/v3/calendars/primary/events', {
-        method:'POST',
-        headers:{ Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
-        body: JSON.stringify({ summary:cal.title||'Untitled event', start, end,
-          ...(cal.description&&{description:cal.description}),
-          ...(cal.location&&{location:cal.location}) }),
+        method: 'POST',
+        headers: { Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
+        body: JSON.stringify({
+          summary: cal.title || 'Untitled event', start, end,
+          ...(cal.description && { description: cal.description }),
+          ...(cal.location    && { location:    cal.location }),
+        }),
       });
-      if (r.status===401){gToken=null;updateGoogleUI();}
+      if (r.status === 401) { gToken = null; updateGoogleUI(); }
       if (!r.ok) throw new Error(`Calendar ${r.status}`);
+      return (await r.json()).id;
     }
 
-    async function createGoogleTask(title) {
+    async function createGoogleTask(todo) {
+      const body = { title: todo.task || 'Untitled task' };
+      if (todo.due)   body.due   = `${todo.due}T00:00:00.000Z`;
+      if (todo.notes) body.notes = todo.notes;
       const r = await fetch('https://tasks.googleapis.com/tasks/v1/lists/@default/tasks', {
-        method:'POST',
-        headers:{ Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
-        body: JSON.stringify({ title }),
+        method: 'POST',
+        headers: { Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
+        body: JSON.stringify(body),
       });
-      if (r.status===401){gToken=null;updateGoogleUI();}
+      if (r.status === 401) { gToken = null; updateGoogleUI(); }
       if (!r.ok) throw new Error(`Tasks ${r.status}`);
+      return (await r.json()).id;
     }
 
-    // ── UI helpers ────────────────────────────────────────────
-    function setStatus(msg,cls){ statusText.textContent=msg; statusText.className=cls; }
-    function showLastCard(note){
-      rawTranscript.textContent = `"${note.transcript}"`;
-      structResult.innerHTML    = buildStructuredHTML(note);
-      structResult.style.display='block';
-      googleBadge.classList.remove('show','err');
-      lastCard.style.display='block';
-    }
-    function buildStructuredHTML(note){
-      if(note.type==='calendar'){
-        const c=note.calendar||{};
-        const when=[c.date?fmtDate(c.date):'',c.time?fmtTime(c.time):''].filter(Boolean).join(' · ');
-        return `<div class="s-type-label cal">📅 Calendar event</div>
-          <div class="s-title">${esc(c.title||'Untitled')}</div>
-          <div class="s-detail">${when?`<span>${when}</span>`:''}${c.location?`<span>📍 ${esc(c.location)}</span>`:''}${c.description&&c.description!==c.title?`<span>${esc(c.description)}</span>`:''}</div>`;
+    // ── Edit & sync ───────────────────────────────────────────
+    async function patchGoogleTitle(note, newTitle) {
+      if (!note.googleId) return;
+      const ready = await ensureGoogleToken();
+      if (!ready) return;
+      if (note.type === 'calendar') {
+        await fetch(`https://www.googleapis.com/calendar/v3/calendars/primary/events/${note.googleId}`, {
+          method: 'PATCH',
+          headers: { Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
+          body: JSON.stringify({ summary: newTitle }),
+        });
+      } else {
+        await fetch(`https://tasks.googleapis.com/tasks/v1/lists/@default/tasks/${note.googleId}`, {
+          method: 'PATCH',
+          headers: { Authorization:`Bearer ${gToken}`, 'Content-Type':'application/json' },
+          body: JSON.stringify({ title: newTitle }),
+        });
       }
-      return `<div class="s-type-label todo">☐ To-do</div>
-        <div class="s-title">${esc(note.todo?.task||note.transcript)}</div>`;
     }
-    function flashBadge(el){ el.classList.add('show'); setTimeout(()=>el.classList.remove('show'),3500); }
-    function showError(msg){ errorBanner.textContent=msg; errorBanner.classList.add('show'); setTimeout(()=>errorBanner.classList.remove('show'),7000); }
-    function hideError(){ errorBanner.classList.remove('show'); }
-    let toastTimer;
-    function showToast(msg){ const t=$('toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer=setTimeout(()=>t.classList.remove('show'),2400); }
+
+    function enterEditMode(cardEl, noteId) {
+      const notes    = loadNotes();
+      const note     = notes.find(n => n.id === noteId);
+      if (!note) return;
+      const currentTitle = note.type === 'calendar'
+        ? (note.calendar?.title || '')
+        : (note.todo?.task || '');
+      const titleEl = cardEl.querySelector('.note-title');
+      const orig    = titleEl.outerHTML;
+
+      titleEl.style.display = 'none';
+      const wrap = document.createElement('div');
+      wrap.innerHTML = `
+        <input class="note-edit-input" type="text" value="${esc(currentTitle)}" />
+        <div class="note-edit-actions">
+          <button type="button" class="note-edit-save">Save</button>
+          <button type="button" class="note-edit-cancel">Cancel</button>
+        </div>`;
+      titleEl.insertAdjacentElement('afterend', wrap);
+      const input = wrap.querySelector('.note-edit-input');
+      input.focus();
+      input.setSelectionRange(input.value.length, input.value.length);
+
+      wrap.querySelector('.note-edit-cancel').addEventListener('click', () => {
+        wrap.remove(); titleEl.style.display = '';
+      });
+      wrap.querySelector('.note-edit-save').addEventListener('click', async () => {
+        const newTitle = capFirst(input.value.trim());
+        if (!newTitle) return;
+        // Update in localStorage
+        if (note.type === 'calendar') note.calendar.title = newTitle;
+        else note.todo.task = newTitle;
+        store.set(NOTES_KEY, JSON.stringify(notes));
+        // Update DOM immediately
+        wrap.remove(); titleEl.style.display = '';
+        titleEl.textContent = newTitle;
+        // Sync to Google in background
+        patchGoogleTitle(note, newTitle)
+          .then(() => showToast('Updated ✓'))
+          .catch(() => showToast('Saved locally — Google sync failed'));
+      });
+    }
 
     // ── Notes storage ─────────────────────────────────────────
-    function loadNotes(){ try{return JSON.parse(store.get(NOTES_KEY))||[];}catch{return[];} }
-    function addNote(note){ const n=loadNotes(); n.unshift(note); store.set(NOTES_KEY,JSON.stringify(n)); }
-    function deleteNote(id){ store.set(NOTES_KEY,JSON.stringify(loadNotes().filter(n=>n.id!==id))); renderNotes(); }
-    function renderNotes(){
-      const notes=loadNotes();
-      emptyState.style.display=notes.length?'none':'block';
-      notesList.innerHTML='';
-      for(const n of notes){
-        const div=document.createElement('div'); div.className='note-card';
-        div.innerHTML=buildNoteCardHTML(n);
-        div.querySelector('.note-del').addEventListener('click',()=>deleteNote(n.id));
+    function loadNotes()  { try { return JSON.parse(store.get(NOTES_KEY)) || []; } catch { return []; } }
+    function addNote(note){ const n = loadNotes(); n.unshift(note); store.set(NOTES_KEY, JSON.stringify(n)); }
+    function updateNoteField(id, fields) {
+      const notes = loadNotes();
+      const idx   = notes.findIndex(n => n.id === id);
+      if (idx !== -1) { Object.assign(notes[idx], fields); store.set(NOTES_KEY, JSON.stringify(notes)); }
+    }
+    function deleteNote(id) {
+      store.set(NOTES_KEY, JSON.stringify(loadNotes().filter(n => n.id !== id)));
+      renderNotes();
+    }
+    function renderNotes() {
+      const notes = loadNotes();
+      emptyState.style.display = notes.length ? 'none' : 'block';
+      notesList.innerHTML = '';
+      for (const n of notes) {
+        const div = document.createElement('div');
+        div.className = 'note-card';
+        div.dataset.id = n.id;
+        div.innerHTML = buildNoteCardHTML(n);
+        div.querySelector('.note-del').addEventListener('click',      () => deleteNote(n.id));
+        div.querySelector('.note-edit-btn').addEventListener('click', () => enterEditMode(div, n.id));
         notesList.appendChild(div);
       }
     }
-    function buildNoteCardHTML(n){
-      const ts=`<div class="note-timestamp">${fmtTimestamp(n.createdAt||n.date)}</div>`;
-      if(n.type==='calendar'){
-        const c=n.calendar||{};
-        const when=[c.date?fmtDate(c.date):'',c.time?fmtTime(c.time):''].filter(Boolean).join(' · ');
-        return `<div class="note-icon">📅</div><div class="note-body"><div class="note-type-label cal">Calendar</div><div class="note-title">${esc(c.title||'Untitled')}</div><div class="note-sub">${when}${c.location?(when?'<br>':'')+'📍 '+esc(c.location):''}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
+
+    function buildNoteCardHTML(n) {
+      const ts = `<div class="note-timestamp">${fmtTimestamp(n.createdAt || n.date)}</div>`;
+      const actions = `<div class="note-actions">
+        <button type="button" class="note-edit-btn" aria-label="Edit">✎</button>
+        <button type="button" class="note-del"      aria-label="Delete">×</button>
+      </div>`;
+      if (n.type === 'calendar') {
+        const c    = n.calendar || {};
+        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
+        return `<div class="note-icon">📅</div>
+          <div class="note-body">
+            <div class="note-type-label cal">Calendar</div>
+            <div class="note-title">${esc(c.title || 'Untitled')}</div>
+            <div class="note-sub">${when}${c.location ? (when ? '<br>' : '') + '📍 ' + esc(c.location) : ''}</div>
+            ${ts}
+          </div>${actions}`;
       }
-      if(n.type==='todo'){
-        return `<div class="note-icon">☐</div><div class="note-body"><div class="note-type-label todo">To-do</div><div class="note-title">${esc(n.todo?.task||n.transcript)}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
+      if (n.type === 'todo') {
+        const t   = n.todo || {};
+        const sub = [t.due ? fmtDate(t.due) : '', t.notes || ''].filter(Boolean).join(' · ');
+        return `<div class="note-icon">☐</div>
+          <div class="note-body">
+            <div class="note-type-label todo">To-do</div>
+            <div class="note-title">${esc(t.task || n.transcript)}</div>
+            ${sub ? `<div class="note-sub">${esc(sub)}</div>` : ''}
+            ${ts}
+          </div>${actions}`;
       }
-      return `<div class="note-icon">🎙️</div><div class="note-body"><div class="note-title">${esc(n.text||n.transcript||'')}</div>${ts}</div><button type="button" class="note-del" aria-label="Delete">×</button>`;
+      return `<div class="note-icon">🎙️</div>
+        <div class="note-body"><div class="note-title">${esc(n.text || n.transcript || '')}</div>${ts}</div>${actions}`;
     }
 
+    // ── UI helpers ────────────────────────────────────────────
+    function setStatus(msg, cls) { statusText.textContent = msg; statusText.className = cls; }
+    function showLastCard(note) {
+      rawTranscript.textContent = `"${note.transcript}"`;
+      structResult.innerHTML    = buildStructuredHTML(note);
+      structResult.style.display = 'block';
+      googleBadge.classList.remove('show', 'err');
+      lastCard.style.display = 'block';
+    }
+    function buildStructuredHTML(note) {
+      if (note.type === 'calendar') {
+        const c    = note.calendar || {};
+        const when = [c.date ? fmtDate(c.date) : '', c.time ? fmtTime(c.time) : ''].filter(Boolean).join(' · ');
+        return `<div class="s-type-label cal">📅 Calendar event</div>
+          <div class="s-title">${esc(c.title || 'Untitled')}</div>
+          <div class="s-detail">
+            ${when ? `<span>${when}</span>` : ''}
+            ${c.location    ? `<span>📍 ${esc(c.location)}</span>` : ''}
+            ${c.description && c.description !== c.title ? `<span>${esc(c.description)}</span>` : ''}
+          </div>`;
+      }
+      const t   = note.todo || {};
+      const sub = [t.due ? fmtDate(t.due) : '', t.notes || ''].filter(Boolean).join(' · ');
+      return `<div class="s-type-label todo">☐ To-do</div>
+        <div class="s-title">${esc(t.task || note.transcript)}</div>
+        ${sub ? `<div class="s-detail"><span>${esc(sub)}</span></div>` : ''}`;
+    }
+    function flashBadge(el) { el.classList.add('show'); setTimeout(() => el.classList.remove('show'), 3500); }
+    function showError(msg) { errorBanner.textContent = msg; errorBanner.classList.add('show'); setTimeout(() => errorBanner.classList.remove('show'), 7000); }
+    function hideError()    { errorBanner.classList.remove('show'); }
+    let toastTimer;
+    function showToast(msg) { const t = $('toast'); t.textContent = msg; t.classList.add('show'); clearTimeout(toastTimer); toastTimer = setTimeout(() => t.classList.remove('show'), 2400); }
+
     // ── Formatting ────────────────────────────────────────────
-    function fmtDate(s){ if(!s)return''; const[y,m,d]=s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
-    function fmtTime(s){ if(!s)return''; const[h,m]=s.split(':').map(Number); return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`; }
-    function fmtTimestamp(iso){ if(!iso)return''; const d=new Date(iso),now=new Date(); const t=d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}); return d.toDateString()===now.toDateString()?`Today, ${t}`:d.toLocaleDateString([],{month:'short',day:'numeric'})+`, ${t}`; }
-    function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+    function fmtDate(s)      { if (!s) return ''; const [y,m,d] = s.split('-').map(Number); return new Date(y,m-1,d).toLocaleDateString('en-US',{weekday:'short',month:'short',day:'numeric'}); }
+    function fmtTime(s)      { if (!s) return ''; const [h,m] = s.split(':').map(Number); return `${h%12||12}:${String(m).padStart(2,'0')} ${h>=12?'PM':'AM'}`; }
+    function fmtTimestamp(iso){ if (!iso) return ''; const d = new Date(iso), now = new Date(); const t = d.toLocaleTimeString([],{hour:'numeric',minute:'2-digit'}); return d.toDateString() === now.toDateString() ? `Today, ${t}` : d.toLocaleDateString([],{month:'short',day:'numeric'}) + `, ${t}`; }
+    function esc(s)          { return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
   </script>
 </body>
 </html>
